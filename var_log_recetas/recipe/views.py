@@ -1,3 +1,6 @@
+import json
+import logging
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
@@ -6,6 +9,8 @@ from utils.views import has_models
 from .models import Recipe, MeasuredIngredient
 from .forms import RecipeAddForm, MeasuredIngredientForm
 
+
+logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def home(request):
@@ -50,6 +55,28 @@ def recipe_edit_ingredient_add(request, recipe):
     return render(request, 'recipe/recipe_edit/ingredient_add.html', {
         'form': form,
     })
+
+
+@has_models
+def recipe_edit_ingredient_delete(request, recipe):
+    error = None
+    try:
+        ingredient_id = request.GET['ingredient_id']
+    except KeyError:
+        error = "Missing ingredient_id"
+    else:
+        try:
+            ingredient = MeasuredIngredient.objects.get(pk=ingredient_id)
+        except MeasuredIngredient.DoesNotExist:
+            error = "Ingredient does not exist"
+        else:
+            ingredient.delete()
+
+    return HttpResponse(json.dumps({
+        'success': not error,
+        'error': error,
+    }))
+
 
 @has_models
 def recipe_edit_ingredients(request, recipe):
