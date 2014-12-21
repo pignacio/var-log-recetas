@@ -75,7 +75,8 @@ class MeasuredIngredientForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(MeasuredIngredientForm, self).clean()
-        if (cleaned_data['ingredient'] and cleaned_data['unit'] and
+        logger.info("ingredients=%s, unit=%s", cleaned_data['ingredient'], cleaned_data['unit'])
+        if (cleaned_data['ingredient'] and cleaned_data['unit'] and not
             cleaned_data['ingredient'].units.filter(id=cleaned_data['unit'].id).exists()):
             raise forms.ValidationError(_("Unit and Ingredient do not match"))
         return cleaned_data
