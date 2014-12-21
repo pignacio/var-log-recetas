@@ -12,14 +12,16 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def _view_models():
-    from recipe.models import Recipe
+    from recipe.models import Recipe, MeasuredIngredient
     return {
         'recipe': Recipe,
+        'measured_ingredient': MeasuredIngredient,
     }
 
 
 def has_models(view):
     @functools.wraps(view)
+    @check_relations
     def new_view(*args, **kwargs):
         for key, model in _view_models().items():
             try:
@@ -35,3 +37,18 @@ def has_models(view):
         return view(*args, **kwargs)
     return new_view
 
+
+def check_relations(view):
+    @functools.wraps(view)
+    def new_view(*args, **kwargs):
+        models = {k: kwargs.get(k, None) for k in _view_models()}
+
+        if models['measured_ingredient']:
+            if (models['recipe'] and
+                    models['recipe'] != models['measured_ingredient'].recipe):
+                raise Http404
+            else:
+                models['recipe'] = models['measured_ingredient'].recipe
+
+        return view(*args, **kwargs)
+    return new_view
