@@ -2,6 +2,10 @@
 {% block js %}
 <script>
 $("#id_ingredient").change(reloadIngredientAddForm)
+$("#ingredient-add-form").on('submit', function(e) {
+  e.preventDefault();
+  submitIngredientAddForm();
+})
 </script>
 {% endblock js %}
 {# vim: set ft=htmldjango :#}

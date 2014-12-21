@@ -5,11 +5,11 @@
 
 {% block content %}
 <h2>{% trans "Ingredientes" %}</h2>
-<div id='ingredients_container'>
-  {% include "recipe/recipe_edit/ingredients.html" with measured_ingredients=recipe.measuredingredients_set.all %}
+<div id='ingredients-container'>
+  {% include "recipe/recipe_edit/ingredients.html" with measured_ingredients=recipe.measuredingredient_set.all %}
 </div>
 <h2>{% trans "Pasos" %}</h2>
-<div id='steps_container'>
+<div id='steps-container'>
 </div>
 {% endblock content %}
 
@@ -18,10 +18,25 @@
 function reloadIngredientAddForm() {
   $("#ingredient-add-container").load("{% url "recipe_recipe_edit_ingredient_add" recipe.id %}?" + $("#ingredient-add-form").serialize())
 }
+function reloadIngredients() {
+  $("#ingredients-container").load("{% url "recipe_recipe_edit_ingredients" recipe.id %}");
+}
+
+
+function submitIngredientAddForm() {
+  $.post("{% url "recipe_recipe_edit_ingredient_add" recipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
+    if (response == "1") {
+      reloadIngredients();
+    } else {
+      $("#ingredient-add-container").html(response);
+    }
+  })
+}
+
+
 
 $(document).ready(function(){
   $("#ingredient-add-btn").click(reloadIngredientAddForm)
-  $("#id_ingredient").change(reloadIngredientAddForm)
 })
 </script>
 {% endblock extra_js %}

@@ -51,6 +51,12 @@ def recipe_edit_ingredient_add(request, recipe):
         'form': form,
     })
 
+@has_models
+def recipe_edit_ingredients(request, recipe):
+    return render(request, 'recipe/recipe_edit/ingredients.html', {
+        'measured_ingredients': recipe.measuredingredient_set.all(),
+    })
+
 
 def recipe_add(request):
     recipe = Recipe()
