@@ -15,4 +15,5 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     'recipe.views',
     url(r'^(?P<recipe_id>\d+)/?$', 'recipe_show', name='recipe_recipe_show')
     url(r'^$', 'home', name='recipe_home'),
+    url(r'^add/?$', 'recipe_add', name='recipe_add'),
 )
