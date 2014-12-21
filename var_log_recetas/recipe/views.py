@@ -29,7 +29,7 @@ def recipe_edit(request, recipe):
 def _get_object_or_none(model, model_pk):
     try:
         return model.objects.get(pk=model_pk)
-    except model.DoesNotExist:
+    except (model.DoesNotExist, ValueError):
         return None
 
 
