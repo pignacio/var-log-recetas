@@ -258,3 +258,23 @@ INSTALLED_APPS += (
 # Don't need to use South when setting up a test database.
 SOUTH_TESTS_MIGRATE = False
 ########## END SOUTH CONFIGURATION
+
+
+########## CRISPY FORMS CONFIGURATION
+# See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#installation
+INSTALLED_APPS += (
+    # Forms layouts and Bootstrap themes:
+    'crispy_forms',
+)
+
+CRISPY_TEMPLATE_PACK= 'bootstrap3'
+########## END CRISPY FORMS CONFIGURATION
+
+
+########## FLOPPYFORMS CONFIGURATION
+# See: http://django-floppyforms.readthedocs.org/en/latest/#installation
+INSTALLED_APPS += (
+    # Customizable forms and widgets:
+    'floppyforms',
+)
+########## END FLOPPYFORMS CONFIGURATION
