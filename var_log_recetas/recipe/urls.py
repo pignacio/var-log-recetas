@@ -13,6 +13,6 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 urlpatterns = patterns(  # pylint: disable=invalid-name
     'recipe.views',
-    url(r'^/?$', 'home', name='recipe_home'),
     url(r'^(?P<recipe_id>\d+)/?$', 'recipe_show', name='recipe_recipe_show')
+    url(r'^$', 'home', name='recipe_home'),
 )

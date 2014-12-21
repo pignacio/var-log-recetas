@@ -10,7 +10,7 @@ admin.autodiscover()
 
 urlpatterns = patterns( # pylint: disable=invalid-name
     '',
-    url(r'^$', TemplateView.as_view(template_name='home.html')),
+    url(r'^$', TemplateView.as_view(template_name='home.html'), name='home'),
     url(r'^recipe/', include('recipe.urls')),
     # Examples:
     # url(r'^$', 'var_log_recetas.views.home', name='home'),

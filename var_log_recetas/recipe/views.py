@@ -4,7 +4,9 @@ from django.shortcuts import render
 
 
 def home(request):
-    pass
+    return render(request, 'recipe/home.html', {
+        'recipes': Recipe.objects.all().order_by('id'),
+    })
 
 
 def recipe_show(request, recipe_id):
