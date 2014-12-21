@@ -1,0 +1,10 @@
+{% load i18n %}
+<ul>
+  {% for measured in measured_ingredients %}
+  <li>{{ measured.ingredient }}, {{ measured.quantity }} {{ measured.measure_unit }} </li>
+  {% endfor %}
+  <div id='ingredient-add-container'>
+    <a href="#" id='ingredient-add-btn' class="btn btn-primary btn-sm">{% trans "Agregar ingrediente" %}</a>
+  </div>
+</ul>
+{# vim: set ft=htmldjango :#}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+{% block title %}{% trans "Receta" %}: {{ recipe.title }}{% endblock title %}
+{% block page_title %}{% trans "Receta" %}: {{ recipe.title }}{% endblock page_title %}
+
+{% block content %}
+<h2>{% trans "Ingredientes" %}</h2>
+<div id='ingredients_container'>
+  {% include "recipe/recipe_edit/ingredients.html" with measured_ingredients=recipe.measuredingredients_set.all %}
+</div>
+<h2>{% trans "Pasos" %}</h2>
+<div id='steps_container'>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+function reloadIngredientAddForm() {
+  $("#ingredient-add-container").load("{% url "recipe_recipe_edit_ingredient_add" recipe.id %}?" + $("#ingredient-add-form").serialize())
+}
+
+$(document).ready(function(){
+  $("#ingredient-add-btn").click(reloadIngredientAddForm)
+  $("#id_ingredient").change(reloadIngredientAddForm)
+})
+</script>
+{% endblock extra_js %}
+{# vim: set ft=htmldjango :#}
