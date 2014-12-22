@@ -278,3 +278,11 @@ INSTALLED_APPS += (
     'floppyforms',
 )
 ########## END FLOPPYFORMS CONFIGURATION
+
+
+########## DJANGO EXTENSIONS CONFIGURATION
+# See: http://django-extensions.readthedocs.org/en/latest/installation_instructions.html
+INSTALLED_APPS += (
+    'django_extensions',
+)
+########## END DJANGO EXTENSIONS CONFIGURATION
