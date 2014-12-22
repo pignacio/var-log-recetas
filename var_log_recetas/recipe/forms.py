@@ -53,12 +53,19 @@ class MeasuredIngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MeasuredIngredientForm, self).__init__(*args, **kwargs)
         logger.debug("initial=%s", self.initial)
-        try:
-            ingredient = self.instance.ingredient
-        except Ingredient.DoesNotExist:
-            if not self.initial['ingredient']:
-                self.initial['ingredient'] = Ingredient.objects.all()[0]
-            ingredient = self.initial['ingredient']
+        if self.is_bound and self.data.get('ingredient', None):
+            try:
+                ingredient = Ingredient.objects.get(pk=self.data.get('ingredient',None))
+                logger.debug("Ingredient from instance: %s", ingredient)
+            except (Ingredient.DoesNotExist, ValueError):
+                ingredient = None
+        else:
+            ingredient = self.initial.get('ingredient', None)
+            logger.debug("Ingredient from initial: %s", ingredient)
+        if ingredient is None:
+            ingredient = Ingredient.objects.all()[0]
+            logger.debug("Ingredient from nowhere: %s", ingredient)
+        logger.debug("Ingredient: %s", ingredient)
         self.fields['ingredient'].empty_label = None
         self.fields['unit'].queryset = ingredient.units.all()
         self.helper = FormHelper()
@@ -75,8 +82,9 @@ class MeasuredIngredientForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(MeasuredIngredientForm, self).clean()
-        logger.info("ingredients=%s, unit=%s", cleaned_data['ingredient'], cleaned_data['unit'])
-        if (cleaned_data['ingredient'] and cleaned_data['unit'] and not
-            cleaned_data['ingredient'].units.filter(id=cleaned_data['unit'].id).exists()):
+        ingredient = cleaned_data.get('ingredient', None)
+        unit = cleaned_data.get('unit', None)
+        if (ingredient and unit and
+                not ingredient.units.filter(id=unit.id).exists()):
             raise forms.ValidationError(_("Unit and Ingredient do not match"))
         return cleaned_data
