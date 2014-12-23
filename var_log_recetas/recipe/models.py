@@ -20,6 +20,13 @@ class Step(models.Model):
     text = models.CharField(max_length=255)
     position = models.PositiveIntegerField()
 
+    def save(self):
+        if self.position is None:
+            max_position = self.recipe.step_set.aggregate(
+                models.Max('position'))['position__max'] or 0
+            self.position = max_position + 1
+        super(Step, self).save()
+
     def __unicode__(self):
         return "Step #{} of {}: {}".format(self.position, self.recipe,
                                            self.text)
