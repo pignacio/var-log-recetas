@@ -11,7 +11,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 import floppyforms.__future__ as forms
 
-from .models import Recipe, MeasuredIngredient
+from .models import Recipe, MeasuredIngredient, Step
 from ingredient.models import Ingredient
 
 
@@ -38,7 +38,6 @@ class RecipeAddForm(forms.ModelForm):
                        data_loading_text=_('Agregando...')),
             )
         )
-
 
 
 class MeasuredIngredientForm(forms.ModelForm):
@@ -88,3 +87,27 @@ class MeasuredIngredientForm(forms.ModelForm):
                 not ingredient.units.filter(id=unit.id).exists()):
             raise forms.ValidationError(_("Unit and Ingredient do not match"))
         return cleaned_data
+
+
+class StepForm(forms.ModelForm):
+    class Meta:
+        model = Step
+        fields = (
+            'text',
+        )
+        widgets = {
+                   'text': forms.Textarea(attrs={'rows': 3, 'cols':140,
+                                                 'style': 'resize: none;'})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(StepForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-inline'
+        self.helper.form_show_labels = False
+        self.helper.layout = Layout(
+            'text',
+            Submit('submit', _('Agregar'),
+                   css_class='btn-primary',
+                   data_loading_text=_('Agregando...')),
+        )

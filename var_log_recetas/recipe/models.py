@@ -31,6 +31,8 @@ class Step(models.Model):
         return "Step #{} of {}: {}".format(self.position, self.recipe,
                                            self.text)
 
+    class Meta:
+        ordering = ('position',)
 
 class Recipe(models.Model):
     title = models.CharField(max_length=200)

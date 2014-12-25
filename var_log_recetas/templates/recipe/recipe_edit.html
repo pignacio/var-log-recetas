@@ -6,11 +6,11 @@
 {% block content %}
 <h2>{% trans "Ingredientes" %}</h2>
 <div id='ingredients-container'>
-  {# include "recipe/recipe_edit/ingredients.html" with measured_ingredients=recipe.measuredingredient_set.all #}
   <img src="{% static "img/ajax-loader.gif" %}" />
 </div>
 <h2>{% trans "Pasos" %}</h2>
 <div id='steps-container'>
+  <img src="{% static "img/ajax-loader.gif" %}" />
 </div>
 {% endblock content %}
 
@@ -38,12 +38,12 @@ function submitIngredientAddForm() {
 
 function deleteIngredient(ingredient_id) {
   swal({
-    title: "Seguro?",
-    text: "Queres borrar ese ingrediente?",
+    title: "¿Seguro?",
+    text: "¿Querés borrar ese ingrediente?",
     type: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Si, borralo",
+    confirmButtonText: "Sí, borralo",
   },
   function() {
   $.getJSON("{% url "recipe_recipe_edit_ingredient_delete" recipe.id %}?ingredient_id=" + ingredient_id, function(response) {
@@ -55,8 +55,75 @@ function deleteIngredient(ingredient_id) {
   });
 }
 
+
+function reloadStepAddForm() {
+  $("#step-add-container").load(
+    "{% url "recipe_recipe_edit_step_add" recipe.id %}?" + $("#step-add-form").serialize(),
+    function (){
+      $("#step-add-form").on('submit', function(e) {
+        e.preventDefault();
+        submitStepAddForm();
+      })
+    }
+  );
+}
+function reloadSteps() {
+  $("#steps-container").load("{% url "recipe_recipe_edit_steps" recipe.id %}", function(){
+    $("#step-add-btn").click(reloadStepAddForm)
+ });
+}
+
+function submitStepAddForm() {
+  $.post("{% url "recipe_recipe_edit_step_add" recipe.id %}", $("#step-add-form").serialize(), function(response) {
+    if (response == "1") {
+      reloadSteps();
+    } else {
+      $("#step-add-container").html(response);
+      $("#id_step").change(reloadStepAddForm)
+    }
+  })
+}
+
+function deleteStep(step_id) {
+  swal({
+    title: "¿Seguro?",
+    text: "¿Querés borrar ese paso?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Sí, borralo",
+  },
+  function() {
+  $.getJSON("{% url "recipe_recipe_edit_step_delete" recipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal borrando el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  })
+  });
+}
+
+function moveStepUp(step_id) {
+  $.getJSON("{% url "recipe_recipe_edit_step_move_up" recipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  });
+}
+
+function moveStepDown(step_id) {
+  $.getJSON("{% url "recipe_recipe_edit_step_move_down" recipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  });
+}
+
 $(document).ready(function() {
   reloadIngredients();
+  reloadSteps();
 })
 
 </script>
