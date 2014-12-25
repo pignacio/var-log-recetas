@@ -19,4 +19,9 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     url(r'^(?P<recipe_id>\d+)/ingredient_add/?$', 'recipe_edit_ingredient_add', name='recipe_recipe_edit_ingredient_add'),
     url(r'^(?P<recipe_id>\d+)/ingredient_delete/?$', 'recipe_edit_ingredient_delete', name='recipe_recipe_edit_ingredient_delete'),
     url(r'^(?P<recipe_id>\d+)/ingredients/?$', 'recipe_edit_ingredients', name='recipe_recipe_edit_ingredients'),
+    url(r'^(?P<recipe_id>\d+)/step_add/?$', 'recipe_edit_step_add', name='recipe_recipe_edit_step_add'),
+    url(r'^(?P<recipe_id>\d+)/step_delete/?$', 'recipe_edit_step_delete', name='recipe_recipe_edit_step_delete'),
+    url(r'^(?P<recipe_id>\d+)/step_move_up/?$', 'recipe_edit_step_move_up', name='recipe_recipe_edit_step_move_up'),
+    url(r'^(?P<recipe_id>\d+)/step_move_down/?$', 'recipe_edit_step_move_down', name='recipe_recipe_edit_step_move_down'),
+    url(r'^(?P<recipe_id>\d+)/steps/?$', 'recipe_edit_steps', name='recipe_recipe_edit_steps'),
 )

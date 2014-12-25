@@ -6,36 +6,83 @@ import functools
 import logging
 
 from django.http import Http404
+from django.db.models import Model
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def _view_models():
-    from recipe.models import Recipe, MeasuredIngredient
+    from recipe.models import Recipe, MeasuredIngredient, Step
     return {
         'recipe': Recipe,
         'measured_ingredient': MeasuredIngredient,
+        'step': Step,
     }
 
 
-def has_models(view):
-    @functools.wraps(view)
-    @check_relations
-    def new_view(*args, **kwargs):
-        for key, model in _view_models().items():
+class ModelExtractionError(Exception):
+    pass
+
+
+class MissingIdError(ModelExtractionError):
+    pass
+
+
+class MissingObjectError(ModelExtractionError):
+    pass
+
+
+_EXTRACT_MODEL_SENTINEL = object()
+
+
+def _extract_model(objects, key, pop=True, default=_EXTRACT_MODEL_SENTINEL):
+    logger.debug("Extracting model '%s' from %s. pop=%s, default=%s",
+                 key, object, pop, default)
+    try:
+        model = _view_models()[key]
+    except KeyError:
+        raise ValueError("Invalid model key: '{}'".format(key))
+    logger.debug("Model: '%s'", model)
+
+    action = objects.pop if pop else objects.__getitem__
+    try:
+        model_pk = action(key + "_id")
+    except KeyError:
+        if default != _EXTRACT_MODEL_SENTINEL:
+            return default
+        raise MissingIdError("Missing {}_id.".format(key))
+
+    try:
+        return model.objects.get(pk=model_pk)
+    except (model.DoesNotExist, TypeError):
+        if default != _EXTRACT_MODEL_SENTINEL:
+            return default
+        raise MissingObjectError("Invalid {}_id: '{}'".format(key, model_pk))
+
+
+def _has_models(view):
+    def new_view(request, *args, **kwargs):
+        logger.debug("_has_models: args:%s, kwargs:%s", args, kwargs)
+        for key in _view_models():
+            logger.debug("_has_models: checking for key: '%s'", key)
             try:
-                model_pk = kwargs.pop(key + '_id')
-            except KeyError:
-                pass
+                instance = _extract_model(kwargs, key)
+            except MissingIdError:
+                logger.debug("_has_models: missing %s id", key)
+            except MissingObjectError:
+                logger.debug("_has_models: missing %s object. Raising 404", key)
+                raise Http404
             else:
-                try:
-                    instance = model.objects.get(pk=model_pk)
-                except model.DoesNotExist:
-                    raise Http404
+                logger.debug("_has_models: setting kwargs[%s] = %s", key, instance)
                 kwargs[key] = instance
-        return view(*args, **kwargs)
+        logger.debug("_has_models: calling original view with: args=%s, kwargs=%s", args, kwargs)
+        return view(request, *args, **kwargs)
     return new_view
+
+
+def has_models(view):
+    return check_relations(_has_models(view))
 
 
 def check_relations(view):
@@ -50,5 +97,45 @@ def check_relations(view):
             else:
                 models['recipe'] = models['measured_ingredient'].recipe
 
+        if models['step']:
+            if (models['recipe'] and
+                    models['recipe'] != models['step'].recipe):
+                raise Http404
+            else:
+                models['recipe'] = models['step'].recipe
+
         return view(*args, **kwargs)
     return new_view
+
+
+def _has_get_models(*expected, **kwargs):
+    on_error = kwargs.get('on_error', None)
+    own_namespace = kwargs.get('own_namespace', False)
+    def decorator(view):
+        @_has_models
+        def new_view(request, *args, **kwargs):
+            logger.debug("_has_get_models: args:%s, kwargs:%s", args, kwargs)
+            for model in expected:
+                logger.debug("_has_get_models: checking for key: '%s'", model)
+                try:
+                    instance = _extract_model(request.GET, model, pop=False)
+                except ModelExtractionError as err:
+                    logger.debug("_has_get_models: extraction error for %s: %s",
+                                 model, err)
+                    if on_error:
+                        return on_error(err, *args, **kwargs)
+                    continue
+                key = ('get_' + model if own_namespace or model in kwargs
+                       else model)
+                logger.debug("_has_get_models: setting kwargs[%s] = %s",
+                             key, instance)
+                kwargs[key] = instance
+            logger.debug("_has_get_models: calling original view with: "
+                         "args=%s, kwargs=%s", args, kwargs)
+            return view(request, *args, **kwargs)
+        return new_view
+    return decorator
+
+
+def has_get_models(view=None, **kwargs):
+    return check_relations(_has_get_models(view, **kwargs))
