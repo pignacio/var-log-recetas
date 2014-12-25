@@ -17,7 +17,7 @@ class MeasuredIngredient(models.Model):
 
 class Step(models.Model):
     recipe = models.ForeignKey('Recipe')
-    text = models.CharField(max_length=255)
+    text = models.TextField()
     position = models.PositiveIntegerField()
 
     def save(self):
