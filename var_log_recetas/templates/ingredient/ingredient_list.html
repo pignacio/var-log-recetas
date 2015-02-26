@@ -9,13 +9,15 @@
 {% for ingredient in ingredient_list %}
 {% if forloop.first %}
 <table class="table">
-  <tr>
+  <tr class="active">
     <td>{% trans "Ingrediente" %}</td>
     <td>{% trans "Unidades" %}</td>
   </tr>
   {% endif %}
-  <td>{{ ingredient.name }}</td>
-  <td>{{ ingredient.units.all | join:", " }}</td>
+  <tr>
+    <td>{{ ingredient.name }}</td>
+    <td>{{ ingredient.units.all | join:", " }}</td>
+  </tr>
   {% if forloop.last %}
 </table>
 {% endif %}

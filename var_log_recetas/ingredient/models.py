@@ -15,6 +15,8 @@ class Ingredient(models.Model):
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
+        ordering = ('name',)
+
 
 class MeasureUnit(models.Model):
     name = models.CharField(_('Name'), max_length=255, unique=True)
