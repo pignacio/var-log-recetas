@@ -71,8 +71,8 @@ class MeasuredIngredientForm(forms.ModelForm):
         self.helper.form_class = 'form-inline'
         self.helper.form_show_labels = False
         self.helper.layout = Layout(
-            'ingredient',
             'amount',
+            'ingredient',
             'unit',
             Submit('submit', _('Agregar'),
                    css_class='btn-primary',
