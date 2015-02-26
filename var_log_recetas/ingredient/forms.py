@@ -50,3 +50,17 @@ class IngredientForm(forms.ModelForm):
         widgets = {
             'units': forms.CheckboxSelectMultiple,
         }
+
+    def __init__(self, *args, **kwargs):
+        super(IngredientForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'name',
+            'units',
+            FormActions(
+                ButtonHolder(
+                    Submit('add', _('Agregar'), css_class='btn-default', data_loading_text=_('Agregando...')),
+                    css_class='form-actions pull-right',
+                ),
+            ),
+        )
