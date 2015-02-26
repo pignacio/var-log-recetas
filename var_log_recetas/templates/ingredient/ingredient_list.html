@@ -15,7 +15,11 @@
   </tr>
   {% endif %}
   <tr>
-    <td>{{ ingredient.name }}</td>
+    <td>
+      <a href="{% url "ingredient_update" ingredient.id%}">
+        {{ ingredient.name }}
+      </a>
+    </td>
     <td>{{ ingredient.units.all | join:", " }}</td>
   </tr>
   {% if forloop.last %}
