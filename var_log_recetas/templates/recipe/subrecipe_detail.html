@@ -27,7 +27,7 @@ function reloadIngredientAddForm() {
 }
 function reloadIngredients() {
   $("#ingredients-container").load("{% url "subrecipe_edit_ingredients" subrecipe.id %}", function(){
-    $("#ingredient-add-btn").click(reloadIngredientAddForm)
+    reloadIngredientAddForm();
  });
 }
 
