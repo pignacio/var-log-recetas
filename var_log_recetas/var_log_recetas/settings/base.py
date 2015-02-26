@@ -286,3 +286,7 @@ INSTALLED_APPS += (
     'django_extensions',
 )
 ########## END DJANGO EXTENSIONS CONFIGURATION
+
+########## TEST RUNNER CONFIGURATION
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+########## END TEST RUNNER CONFIGURATION
