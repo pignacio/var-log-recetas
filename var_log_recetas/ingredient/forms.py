@@ -13,6 +13,7 @@ from crispy_forms.bootstrap import FormActions
 
 from .models import Ingredient, MeasureUnit
 
+
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
@@ -53,13 +54,16 @@ class IngredientForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IngredientForm, self).__init__(*args, **kwargs)
+        submit_text = _('Guardar') if self.instance.pk else _('Agregar')
+        loading_text = _('Guardando...') if self.instance.pk else _('Agregando...')
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'name',
             'units',
             FormActions(
                 ButtonHolder(
-                    Submit('add', _('Agregar'), css_class='btn-default', data_loading_text=_('Agregando...')),
+                    Submit('add', submit_text, css_class='btn-default',
+                           data_loading_text=loading_text),
                     css_class='form-actions pull-right',
                 ),
             ),
