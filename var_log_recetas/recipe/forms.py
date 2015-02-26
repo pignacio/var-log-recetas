@@ -11,7 +11,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit
 import floppyforms.__future__ as forms
 
-from .models import Recipe, MeasuredIngredient, Step
+from .models import Recipe, MeasuredIngredient, Step, SubRecipe
 from ingredient.models import Ingredient
 
 
@@ -96,8 +96,8 @@ class StepForm(forms.ModelForm):
             'text',
         )
         widgets = {
-                   'text': forms.Textarea(attrs={'rows': 3, 'cols':140,
-                                                 'style': 'resize: none;'})
+            'text': forms.Textarea(attrs={'rows': 3, 'cols':140,
+                                          'style': 'resize: none;'})
         }
 
     def __init__(self, *args, **kwargs):
@@ -110,4 +110,35 @@ class StepForm(forms.ModelForm):
             Submit('submit', _('Agregar'),
                    css_class='btn-primary',
                    data_loading_text=_('Agregando...')),
+        )
+
+
+class SubRecipeSelectForm(forms.Form):
+    def __init__(self, recipe, *args, **kwargs):
+        super(SubRecipeSelectForm, self).__init__(*args, **kwargs)
+        self.fields['subrecipe'] = forms.ChoiceField(
+            choices=[(sr.pk, sr.title) for sr in recipe.subrecipe_set.all()],
+            label=_("Parte"),
+        )
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-inline'
+        self.helper.form_id = 'select-subrecipe-form'
+
+
+class SubRecipeForm(forms.ModelForm):
+    class Meta:
+        model = SubRecipe
+        fields = (
+            'title',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(SubRecipeForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.layout = Layout(
+            'title',
+            Submit('submit', _('Guardar'),
+                   css_class='btn-primary',
+                   data_loading_text=_('Guardando...')),
         )

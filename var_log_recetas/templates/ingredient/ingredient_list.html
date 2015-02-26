@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Ingredientes" %}{% endblock page_title %}
+{% block title %}{% trans "Ingredientes" %}{% endblock title %}
+
+{% block content %}
+<a class="btn btn-primary pull-right" href="{% url "ingredient_add" %}">{% trans "Agregar" %}</a>
+{% for ingredient in ingredient_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr class="active">
+    <td>{% trans "Ingrediente" %}</td>
+    <td>{% trans "Unidades" %}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ ingredient.name }}</td>
+    <td>{{ ingredient.units.all | join:", " }}</td>
+  </tr>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay ingredientes :(
+{% endfor %}
+{% endblock content %}
+{# vim: set ft=htmldjango :#}

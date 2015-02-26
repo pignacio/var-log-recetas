@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Recetas" %}{% endblock title %}
+{% block page_title %}{% trans "Recetas" %}{% endblock page_title %}
+
+{% block content %}
+<a class='pull-right btn btn-primary' href="{% url "recipe_add" %}">{% trans "Nueva receta" %}</a>
+
+{% for recipe in recipe_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr>
+    <td>#</td>
+    <td>{% trans "Título" %}</td>
+    <td>Edit</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ recipe.id }}</td>
+    <td><a href="{% url "recipe_edit" recipe.id %}">{{ recipe.title }}</a></td>
+    <td><a href="{% url "recipe_edit" recipe.id %}"><span class="glyphicon glyphicon-edit"></span></a></td>
+  </tr>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay recetas :(
+{% endfor %}
+{% endblock content %}
+
+{# vim: set ft=htmldjango :#}

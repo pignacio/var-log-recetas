@@ -5,6 +5,8 @@
 
 {% block content %}
 <ul class="nav nav-pills nav-stacked">
+  <li><a href="{% url "ingredient_list" %}">Ingredientes</a></li>
+  <li><a href="{% url "unit_list" %}">Unidades</a></li>
   <li><a href="{% url "recipe_home" %}">Recetas</a></li>
 </ul>
 {% endblock content %}

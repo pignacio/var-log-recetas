@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Unidades" %}{% endblock page_title %}
+{% block title %}{% trans "Unidades" %}{% endblock title %}
+
+{% block content %}
+<a class="btn btn-primary pull-right" href="{% url "unit_add" %}">{% trans "Agregar" %}</a>
+{% for unit in measureunit_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr>
+    <td>{% trans "Unidad" %}</td>
+    <td>{% trans "Nombre corto" %}</td>
+  </tr>
+  {% endif %}
+  <td>{{ unit.name }}</td>
+  <td>{{ unit.short_name }}</td>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay unidades :(
+{% endfor %}
+{% endblock content %}
+{# vim: set ft=htmldjango :#}

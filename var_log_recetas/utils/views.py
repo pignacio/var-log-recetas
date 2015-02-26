@@ -13,9 +13,10 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def _view_models():
-    from recipe.models import Recipe, MeasuredIngredient, Step
+    from recipe.models import Recipe, MeasuredIngredient, Step, SubRecipe
     return {
         'recipe': Recipe,
+        'subrecipe': SubRecipe,
         'measured_ingredient': MeasuredIngredient,
         'step': Step,
     }
@@ -91,18 +92,25 @@ def check_relations(view):
         models = {k: kwargs.get(k, None) for k in _view_models()}
 
         if models['measured_ingredient']:
-            if (models['recipe'] and
-                    models['recipe'] != models['measured_ingredient'].recipe):
+            if (models['subrecipe'] and
+                    models['subrecipe'] != models['measured_ingredient'].subrecipe):
                 raise Http404
             else:
-                models['recipe'] = models['measured_ingredient'].recipe
+                models['subrecipe'] = models['measured_ingredient'].subrecipe
 
         if models['step']:
-            if (models['recipe'] and
-                    models['recipe'] != models['step'].recipe):
+            if (models['subrecipe'] and
+                    models['subrecipe'] != models['step'].subrecipe):
                 raise Http404
             else:
-                models['recipe'] = models['step'].recipe
+                models['subrecipe'] = models['step'].subrecipe
+
+        if models['subrecipe']:
+            if (models['recipe'] and
+                    models['recipe'] != models['subrecipe'].recipe):
+                raise Http404
+            else:
+                models['recipe'] = models['subrecipe'].recipe
 
         return view(*args, **kwargs)
     return new_view

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Partes de"%} {{ recipe.title }}{% endblock page_title %}
+{% block title %}{% trans "Partes de"%} {{ recipe.title }}{% endblock title %}
+
+{% block content %}
+<ol>
+  {% for subrecipe in recipe.subrecipe_set.all %}
+  <li>
+  <a href="{% url "subrecipe_edit" subrecipe.id %}">{{ subrecipe.title }}</a>
+  <a href="{% url "subrecipe_rename" subrecipe.id %}"><div class="glyphicon glyphicon-edit"></div></a>
+  </li>
+  {% endfor %}
+</ol>
+
+<a class="btn btn-primary" href="{% url "recipe_parts_add" recipe.id %}">Agregar parte</a>
+{% endblock content %}
+{# vim: set ft=htmldjango :#}

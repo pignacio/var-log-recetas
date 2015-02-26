@@ -4,6 +4,12 @@
 {% block page_title %}{% trans "Receta" %}: {{ subrecipe.recipe.title }}{% endblock page_title %}
 
 {% block content %}
+{% if subrecipe_select_form %}
+{% crispy subrecipe_select_form %}
+{% else %}
+Parte: {{ subrecipe.title }}.
+{% endif %}
+<a class="btn btn-primary btn-xs" href="{% url "recipe_parts" subrecipe.recipe.id %}">{% trans "Editar partes" %}</a>
 <h2>{% trans "Ingredientes" %}</h2>
 <div id='ingredients-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />
@@ -17,16 +23,16 @@
 {% block extra_js %}
 <script>
 function reloadIngredientAddForm() {
-  $("#ingredient-add-container").load("{% url "recipe_recipe_edit_ingredient_add" recipe.id %}?" + $("#ingredient-add-form").serialize());
+  $("#ingredient-add-container").load("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}?" + $("#ingredient-add-form").serialize());
 }
 function reloadIngredients() {
-  $("#ingredients-container").load("{% url "recipe_recipe_edit_ingredients" recipe.id %}", function(){
+  $("#ingredients-container").load("{% url "subrecipe_edit_ingredients" subrecipe.id %}", function(){
     $("#ingredient-add-btn").click(reloadIngredientAddForm)
  });
 }
 
 function submitIngredientAddForm() {
-  $.post("{% url "recipe_recipe_edit_ingredient_add" recipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
+  $.post("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
     if (response == "1") {
       reloadIngredients();
     } else {
@@ -46,7 +52,7 @@ function deleteIngredient(ingredient_id) {
     confirmButtonText: "Sí, borralo",
   },
   function() {
-  $.getJSON("{% url "recipe_recipe_edit_ingredient_delete" recipe.id %}?ingredient_id=" + ingredient_id, function(response) {
+  $.getJSON("{% url "subrecipe_edit_ingredient_delete" subrecipe.id %}?ingredient_id=" + ingredient_id, function(response) {
     if (!response.success){
       swal("Ooops!", "Algo salió mal borrando el ingrediente: '" + response.error + "'");
     }
@@ -58,7 +64,7 @@ function deleteIngredient(ingredient_id) {
 
 function reloadStepAddForm() {
   $("#step-add-container").load(
-    "{% url "recipe_recipe_edit_step_add" recipe.id %}?" + $("#step-add-form").serialize(),
+    "{% url "subrecipe_edit_step_add" subrecipe.id %}?" + $("#step-add-form").serialize(),
     function (){
       $("#step-add-form").on('submit', function(e) {
         e.preventDefault();
@@ -68,13 +74,13 @@ function reloadStepAddForm() {
   );
 }
 function reloadSteps() {
-  $("#steps-container").load("{% url "recipe_recipe_edit_steps" recipe.id %}", function(){
+  $("#steps-container").load("{% url "subrecipe_edit_steps" subrecipe.id %}", function(){
     $("#step-add-btn").click(reloadStepAddForm)
  });
 }
 
 function submitStepAddForm() {
-  $.post("{% url "recipe_recipe_edit_step_add" recipe.id %}", $("#step-add-form").serialize(), function(response) {
+  $.post("{% url "subrecipe_edit_step_add" subrecipe.id %}", $("#step-add-form").serialize(), function(response) {
     if (response == "1") {
       reloadSteps();
     } else {
@@ -94,7 +100,7 @@ function deleteStep(step_id) {
     confirmButtonText: "Sí, borralo",
   },
   function() {
-  $.getJSON("{% url "recipe_recipe_edit_step_delete" recipe.id %}?step_id=" + step_id, function(response) {
+  $.getJSON("{% url "subrecipe_edit_step_delete" subrecipe.id %}?step_id=" + step_id, function(response) {
     if (!response.success){
       swal("Ooops!", "Algo salió mal borrando el paso: '" + response.error + "'");
     }
@@ -104,7 +110,7 @@ function deleteStep(step_id) {
 }
 
 function moveStepUp(step_id) {
-  $.getJSON("{% url "recipe_recipe_edit_step_move_up" recipe.id %}?step_id=" + step_id, function(response) {
+  $.getJSON("{% url "subrecipe_edit_step_move_up" subrecipe.id %}?step_id=" + step_id, function(response) {
     if (!response.success){
       swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
     }
@@ -113,7 +119,7 @@ function moveStepUp(step_id) {
 }
 
 function moveStepDown(step_id) {
-  $.getJSON("{% url "recipe_recipe_edit_step_move_down" recipe.id %}?step_id=" + step_id, function(response) {
+  $.getJSON("{% url "subrecipe_edit_step_move_down" subrecipe.id %}?step_id=" + step_id, function(response) {
     if (!response.success){
       swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
     }
@@ -124,6 +130,9 @@ function moveStepDown(step_id) {
 $(document).ready(function() {
   reloadIngredients();
   reloadSteps();
+  $('#select-subrecipe-form').on('change', function(){
+    window.location = "{% url "recipe_edit" subrecipe.recipe.id %}?" + $('#select-subrecipe-form').serialize()
+  })
 })
 
 </script>

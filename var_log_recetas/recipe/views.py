@@ -1,13 +1,20 @@
 import json
 import logging
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import (
+    FormView, TemplateView, ListView, CreateView, DetailView, RedirectView
+)
 
 from ingredient.models import Ingredient, MeasureUnit
 from utils.views import has_models, has_get_models
-from .models import Recipe, MeasuredIngredient, Step
-from .forms import RecipeAddForm, MeasuredIngredientForm, StepForm
+from .models import Recipe, MeasuredIngredient, Step, SubRecipe
+from .forms import (
+    RecipeAddForm, MeasuredIngredientForm, StepForm, SubRecipeSelectForm,
+    SubRecipeForm
+)
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -20,6 +27,85 @@ def _render_json_error(err, *args, **kwargs):
     }))
 
 
+class RecipeListView(ListView):
+    model = Recipe
+
+
+class RecipeCreateView(FormView):
+    form_class = RecipeAddForm
+    template_name = 'recipe/recipe_form.html'
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('recipe_edit', form.instance.id)
+
+
+class RecipeEditView(RedirectView):
+    permanent = False
+    query_string = True
+
+    def get_redirect_url(self, *args, **kwargs):
+        recipe = get_object_or_404(Recipe, pk=kwargs['recipe_id'])
+        try:
+            subrecipe_id = self.request.GET['subrecipe']
+            subrecipe = recipe.subrecipe_set.get(id=subrecipe_id)
+        except (KeyError, SubRecipe.DoesNotExist):
+            subrecipe = (recipe.subrecipe_set.first() or
+                         recipe.subrecipe_set.create(title='la receta'))
+        return reverse('subrecipe_edit', kwargs=dict(subrecipe_id=subrecipe.id))
+
+
+class RecipePartsView(DetailView):
+    model = Recipe
+    pk_url_kwarg = 'recipe_id'
+    template_name = 'recipe/recipe_parts.html'
+
+
+class RecipeAddPartView(FormView):
+    form_class = SubRecipeForm
+    template_name = "generic/form.html"
+
+    def get_form(self, form_class):
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('recipe_id'))
+        subrecipe = SubRecipe(recipe=recipe)
+        return form_class(instance=subrecipe, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('recipe_parts', form.instance.recipe.id)
+
+
+class SubRecipeRenameView(FormView):
+    form_class = SubRecipeForm
+    template_name = "generic/form.html"
+
+    def get_form(self, form_class):
+        subrecipe = get_object_or_404(SubRecipe,
+                                      id=self.kwargs.get('subrecipe_id'))
+        return form_class(instance=subrecipe, **self.get_form_kwargs())
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('recipe_parts', form.instance.recipe.id)
+
+
+class SubRecipeDetailView(DetailView):
+    model = SubRecipe
+    pk_url_kwarg = 'subrecipe_id'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SubRecipeDetailView, self).get_context_data(*args,
+                                                                    **kwargs)
+        if self.object.recipe.subrecipe_set.count() > 1:
+            context['subrecipe_select_form'] = SubRecipeSelectForm(
+                self.object.recipe,
+                initial=dict(
+                    subrecipe=self.object.id
+                ),
+            )
+        context['recipe'] = self.object.recipe
+        return context
+
 
 def home(request):
     return render(request, 'recipe/home.html', {
@@ -27,10 +113,24 @@ def home(request):
     })
 
 
+def recipe_detail(request, recipe):
+    return render(request, 'recipe/recipe_detail.html', {
+        'recipe': recipe,
+    })
+
+
 @has_models
 def recipe_edit(request, recipe):
     return render(request, 'recipe/recipe_edit.html', {
         'recipe': recipe,
+    })
+
+
+@has_models
+def subrecipe_edit(request, subrecipe):
+    return render(request, 'recipe/subrecipe_edit.html', {
+        'recipe': subrecipe.recipe,
+        'subrecipe': subrecipe,
     })
 
 
@@ -42,8 +142,8 @@ def _get_object_or_none(model, model_pk):
 
 
 @has_models
-def recipe_edit_ingredient_add(request, recipe):
-    instance = MeasuredIngredient(recipe=recipe)
+def subrecipe_edit_ingredient_add(request, subrecipe):
+    instance = MeasuredIngredient(subrecipe=subrecipe)
     if request.method == "POST":
         form = MeasuredIngredientForm(request.POST, instance=instance)
         if form.is_valid():
@@ -66,7 +166,7 @@ def recipe_edit_ingredient_add(request, recipe):
 
 
 @has_models
-def recipe_edit_ingredient_delete(request, recipe):
+def subrecipe_edit_ingredient_delete(request, subrecipe):
     error = None
     try:
         ingredient_id = request.GET['ingredient_id']
@@ -87,15 +187,15 @@ def recipe_edit_ingredient_delete(request, recipe):
 
 
 @has_models
-def recipe_edit_ingredients(request, recipe):
+def subrecipe_edit_ingredients(request, subrecipe):
     return render(request, 'recipe/recipe_edit/ingredients.html', {
-        'measured_ingredients': recipe.measuredingredient_set.all(),
+        'measured_ingredients': subrecipe.measuredingredient_set.all(),
     })
 
 
 @has_models
-def recipe_edit_step_add(request, recipe):
-    instance = Step(recipe=recipe)
+def subrecipe_edit_step_add(request, subrecipe):
+    instance = Step(subrecipe=subrecipe)
     if request.method == "POST":
         form = StepForm(request.POST, instance=instance)
         if form.is_valid():
@@ -118,7 +218,7 @@ def recipe_edit_step_add(request, recipe):
 
 
 @has_get_models('step', on_error=_render_json_error)
-def recipe_edit_step_delete(request, recipe, step):
+def subrecipe_edit_step_delete(request, subrecipe, step):
     step.delete()
     return HttpResponse(json.dumps({
         'success': True,
@@ -126,9 +226,9 @@ def recipe_edit_step_delete(request, recipe, step):
 
 
 @has_models
-def recipe_edit_steps(request, recipe):
+def subrecipe_edit_steps(request, subrecipe):
     return render(request, 'recipe/recipe_edit/steps.html', {
-        'steps': recipe.step_set.all(),
+        'steps': subrecipe.step_set.all(),
     })
 
 
@@ -153,9 +253,9 @@ def _swap_steps(step, ostep):
 
 
 @has_get_models('step', on_error=_render_json_error)
-def recipe_edit_step_move_up(request, recipe, step):
+def subrecipe_edit_step_move_up(request, subrecipe, step):
     error = None
-    previous_step = (recipe.step_set.filter(position__lt=step.position)
+    previous_step = (subrecipe.step_set.filter(position__lt=step.position)
                      .order_by('-position').first())
     if previous_step is None:
         error = "There is no previous step"
@@ -167,10 +267,10 @@ def recipe_edit_step_move_up(request, recipe, step):
     }))
 
 @has_get_models('step', on_error=_render_json_error)
-def recipe_edit_step_move_down(request, recipe, step):
+def subrecipe_edit_step_move_down(request, subrecipe, step):
     error = None
-    next_step = (recipe.step_set.filter(position__gt=step.position)
-                     .order_by('position').first())
+    next_step = (subrecipe.step_set.filter(position__gt=step.position)
+                 .order_by('position').first())
     if next_step is None:
         error = "There is no next step"
     else:
@@ -179,3 +279,6 @@ def recipe_edit_step_move_down(request, recipe, step):
         'success': not error,
         'error': error,
     }))
+
+def recipe_view(request, recipe):
+    pass
