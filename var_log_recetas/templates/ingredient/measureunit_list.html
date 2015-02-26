@@ -14,8 +14,10 @@
     <td>{% trans "Nombre corto" %}</td>
   </tr>
   {% endif %}
-  <td>{{ unit.name }}</td>
-  <td>{{ unit.short_name }}</td>
+  <tr>
+    <td>{{ unit.name }}</td>
+    <td>{{ unit.short_name }}</td>
+  </tr>
   {% if forloop.last %}
 </table>
 {% endif %}
