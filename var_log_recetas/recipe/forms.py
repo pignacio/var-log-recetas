@@ -70,6 +70,8 @@ class MeasuredIngredientForm(forms.ModelForm):
         else:
             units = MeasureUnit.objects.all()
 
+        self.fields['amount'].widget.attrs['placeholder'] = 'Amount'
+        self.fields['ingredient_name'].widget.attrs['placeholder'] = 'Ingredient'
         self.fields['ingredient_name'].empty_label = None
         self.fields['ingredient_name'].widget.datalist = [
             i.name for i in Ingredient.objects.all()]
