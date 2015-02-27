@@ -37,9 +37,6 @@ function submitIngredientAddForm() {
   $.post("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
     if (response == "1") {
       reloadIngredients();
-    } else {
-      $("#ingredient-add-container").html(response);
-      $("#id_ingredient_name").on('input', reloadIngredientAddForm)
     }
   })
 }
