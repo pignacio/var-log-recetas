@@ -23,7 +23,9 @@ Parte: {{ subrecipe.title }}.
 {% block extra_js %}
 <script>
 function reloadIngredientAddForm() {
-  $("#ingredient-add-container").load("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}?" + $("#ingredient-add-form").serialize());
+  $("#ingredient-add-container").load("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}?" + $("#ingredient-add-form").serialize(), function(){
+    $('#id_ingredient_name').focus()
+  });
 }
 function reloadIngredients() {
   $("#ingredients-container").load("{% url "subrecipe_edit_ingredients" subrecipe.id %}", function(){
@@ -35,9 +37,6 @@ function submitIngredientAddForm() {
   $.post("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
     if (response == "1") {
       reloadIngredients();
-    } else {
-      $("#ingredient-add-container").html(response);
-      $("#id_ingredient").change(reloadIngredientAddForm)
     }
   })
 }

@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from django.utils.translation import ugettext as _
+from django.forms import ValidationError
 
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
@@ -12,7 +13,7 @@ from crispy_forms.layout import Layout, Submit
 import floppyforms.__future__ as forms
 
 from .models import Recipe, MeasuredIngredient, Step, SubRecipe
-from ingredient.models import Ingredient
+from ingredient.models import Ingredient, MeasureUnit
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -45,39 +46,54 @@ class MeasuredIngredientForm(forms.ModelForm):
         model = MeasuredIngredient
         fields = (
             'amount',
-            'ingredient',
             'unit',
         )
+
+    ingredient_name = forms.CharField(max_length=255)
 
     def __init__(self, *args, **kwargs):
         super(MeasuredIngredientForm, self).__init__(*args, **kwargs)
         logger.debug("initial=%s", self.initial)
-        if self.is_bound and self.data.get('ingredient', None):
-            try:
-                ingredient = Ingredient.objects.get(pk=self.data.get('ingredient',None))
-                logger.debug("Ingredient from instance: %s", ingredient)
-            except (Ingredient.DoesNotExist, ValueError):
-                ingredient = None
+        logger.debug("data: %s", self.data)
+        if self.is_bound and self.data.get('ingredient_name', None):
+            ingredient_name = self.data.get('ingredient_name',None)
+            logger.debug("Ingredient name from instance: '%s'", ingredient_name)
         else:
-            ingredient = self.initial.get('ingredient', None)
-            logger.debug("Ingredient from initial: %s", ingredient)
-        if ingredient is None:
-            ingredient = Ingredient.objects.all()[0]
-            logger.debug("Ingredient from nowhere: %s", ingredient)
-        logger.debug("Ingredient: %s", ingredient)
-        self.fields['ingredient'].empty_label = None
-        self.fields['unit'].queryset = ingredient.units.all()
+            ingredient_name = self.initial.get('ingredient_name', None)
+            logger.debug("Ingredient name from initial: '%s'", ingredient_name)
+        if ingredient_name:
+            try:
+                ingredient = Ingredient.objects.get(name=ingredient_name)
+                units = ingredient.units.all()
+            except (Ingredient.DoesNotExist, ValueError):
+                units = MeasureUnit.objects.all()
+        else:
+            units = MeasureUnit.objects.all()
+
+        self.fields['ingredient_name'].empty_label = None
+        self.fields['ingredient_name'].widget.datalist = [
+            i.name for i in Ingredient.objects.all()]
+        self.fields['unit'].queryset = units
         self.helper = FormHelper()
         self.helper.form_class = 'form-inline'
         self.helper.form_show_labels = False
         self.helper.layout = Layout(
             'amount',
             'unit',
-            'ingredient',
+            'ingredient_name',
             Submit('submit', _('Agregar'),
                    css_class='btn-primary',
                    data_loading_text=_('Agregando...')),
         )
+
+    def clean_ingredient_name(self):
+        name = self.cleaned_data['ingredient_name']
+        try:
+            ingredient = Ingredient.objects.get(name=name)
+        except Ingredient.DoesNotExist:
+            raise ValidationError('Invalid ingredient')
+        else:
+            self.instance.ingredient = ingredient
 
     def clean(self):
         cleaned_data = super(MeasuredIngredientForm, self).clean()
