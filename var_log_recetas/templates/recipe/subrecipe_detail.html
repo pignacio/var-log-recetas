@@ -37,7 +37,7 @@ function submitIngredientAddForm() {
       reloadIngredients();
     } else {
       $("#ingredient-add-container").html(response);
-      $("#id_ingredient").change(reloadIngredientAddForm)
+      $("#id_ingredient_name").on('input', reloadIngredientAddForm)
     }
   })
 }

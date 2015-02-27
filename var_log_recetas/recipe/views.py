@@ -150,12 +150,10 @@ def subrecipe_edit_ingredient_add(request, subrecipe):
             form.save()
             return HttpResponse("1")
     else:
-        ingredient_id = request.GET.get('ingredient', None)
-        ingredient = _get_object_or_none(Ingredient, ingredient_id)
         unit_id = request.GET.get('unit', None)
         unit = _get_object_or_none(MeasureUnit, unit_id)
         form = MeasuredIngredientForm(instance=instance, initial={
-            'ingredient': ingredient,
+            'ingredient_name': request.GET.get('ingredient_name'),
             'amount': request.GET.get('amount', None),
             'unit': unit,
         })
