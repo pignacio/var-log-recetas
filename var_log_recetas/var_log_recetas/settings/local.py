@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+# pylint: disable=wildcard-import,unused-wildcard-import
 """Development settings and globals."""
 
 from __future__ import absolute_import

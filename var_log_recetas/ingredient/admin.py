@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# encoding: utf-8
+# pylint: disable=too-few-public-methods
+
 from django.contrib import admin
 
 from .models import MeasureUnit, Ingredient

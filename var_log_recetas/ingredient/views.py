@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
+# pylint: disable=too-few-public-methods,too-many-ancestors
 
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render, redirect
-from django.utils.translation import ugettext as _
+from django.shortcuts import redirect
 from django.views.generic import ListView, FormView, UpdateView
 
 from .forms import IngredientForm, MeasureUnitForm
