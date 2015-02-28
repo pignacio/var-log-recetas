@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=too-few-public-methods
 from __future__ import absolute_import, unicode_literals
 
 import logging
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 class MeasureUnitForm(forms.ModelForm):
-    class Meta:
+    class Meta(object):
         model = MeasureUnit
         fields = (
             'name',
@@ -33,7 +34,8 @@ class MeasureUnitForm(forms.ModelForm):
             'short_name',
             FormActions(
                 ButtonHolder(
-                    Submit('add', _('Agregar'), css_class='btn-default', data_loading_text=_('Agregando...')),
+                    Submit('add', _('Agregar'), css_class='btn-default',
+                           data_loading_text=_('Agregando...')),
                     css_class='form-actions pull-right',
                 ),
             ),
@@ -41,7 +43,7 @@ class MeasureUnitForm(forms.ModelForm):
 
 
 class IngredientForm(forms.ModelForm):
-    class Meta:
+    class Meta(object):
         model = Ingredient
         fields = (
             'name',
@@ -55,7 +57,8 @@ class IngredientForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(IngredientForm, self).__init__(*args, **kwargs)
         submit_text = _('Guardar') if self.instance.pk else _('Agregar')
-        loading_text = _('Guardando...') if self.instance.pk else _('Agregando...')
+        loading_text = (_('Guardando...') if self.instance.pk
+                        else _('Agregando...'))
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'name',

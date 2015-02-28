@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# encoding: utf-8
+# pylint: disable=too-few-public-methods
+
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -11,7 +15,7 @@ class Ingredient(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
+    class Meta(object):
         verbose_name = _('ingredient')
         verbose_name_plural = _('ingredients')
 
@@ -25,6 +29,6 @@ class MeasureUnit(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
+    class Meta(object):
         verbose_name = _('measure unit')
         verbose_name_plural = _('measure units')

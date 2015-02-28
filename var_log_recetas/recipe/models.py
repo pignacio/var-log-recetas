@@ -44,7 +44,7 @@ class Recipe(models.Model):
 
 
 class SubRecipe(models.Model):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey(Recipe)
     position = models.PositiveIntegerField()
     title = models.CharField(max_length=200)
 
@@ -54,6 +54,9 @@ class SubRecipe(models.Model):
                 models.Max('position'))['position__max'] or 0
             self.position = max_position + 1
         super(SubRecipe, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return "{s.recipe} part #{s.position}: {s.title}".format(s=self)
 
 
 class Tags(models.Model):

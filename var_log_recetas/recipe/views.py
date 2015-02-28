@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+# encoding: utf-8
+# pylint: disable=too-few-public-methods,too-many-ancestors
+
 import json
 import logging
 
@@ -21,7 +25,7 @@ from .forms import (
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-def _render_json_error(err, *args, **kwargs):
+def _render_json_error(err, *_args, **_kwargs):
     return HttpResponse(json.dumps({
         'success': False,
         'error': str(err),
@@ -165,7 +169,7 @@ def subrecipe_edit_ingredient_add(request, subrecipe):
 
 
 @has_models
-def subrecipe_edit_ingredient_delete(request, subrecipe):
+def subrecipe_edit_ingredient_delete(request, subrecipe):  # pylint: disable=invalid-name
     error = None
     try:
         ingredient_id = request.GET['ingredient_id']
@@ -173,7 +177,7 @@ def subrecipe_edit_ingredient_delete(request, subrecipe):
         error = "Missing ingredient_id"
     else:
         try:
-            ingredient = MeasuredIngredient.objects.get(pk=ingredient_id)
+            ingredient = subrecipe.measuredingredient_set.get(pk=ingredient_id)
         except MeasuredIngredient.DoesNotExist:
             error = "Ingredient does not exist"
         else:
@@ -217,7 +221,7 @@ def subrecipe_edit_step_add(request, subrecipe):
 
 
 @has_get_models('step', on_error=_render_json_error)
-def subrecipe_edit_step_delete(request, subrecipe, step):
+def subrecipe_edit_step_delete(_request, _subrecipe, step):
     step.delete()
     return HttpResponse(json.dumps({
         'success': True,
@@ -252,7 +256,7 @@ def _swap_steps(step, ostep):
 
 
 @has_get_models('step', on_error=_render_json_error)
-def subrecipe_edit_step_move_up(request, subrecipe, step):
+def subrecipe_edit_step_move_up(_request, subrecipe, step):
     error = None
     previous_step = (subrecipe.step_set.filter(position__lt=step.position)
                      .order_by('-position').first())
@@ -266,7 +270,7 @@ def subrecipe_edit_step_move_up(request, subrecipe, step):
     }))
 
 @has_get_models('step', on_error=_render_json_error)
-def subrecipe_edit_step_move_down(request, subrecipe, step):
+def subrecipe_edit_step_move_down(_request, subrecipe, step):
     error = None
     next_step = (subrecipe.step_set.filter(position__gt=step.position)
                  .order_by('position').first())
@@ -293,7 +297,7 @@ def _serialize_subrecipe(subrecipe):
 
 
 @has_models
-def recipe_export(request, recipe):
+def recipe_export(_request, recipe):
     output = {}
     output['title'] = recipe.title
     output['subrecipes'] = [_serialize_subrecipe(sr)
@@ -305,5 +309,5 @@ def recipe_export(request, recipe):
     return response
 
 
-def recipe_view(request, recipe):
+def recipe_view(_request, _recipe):
     pass

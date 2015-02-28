@@ -6,7 +6,6 @@ import functools
 import logging
 
 from django.http import Http404
-from django.db.models import Model
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name

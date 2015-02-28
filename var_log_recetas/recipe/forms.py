@@ -56,7 +56,7 @@ class MeasuredIngredientForm(forms.ModelForm):
         logger.debug("initial=%s", self.initial)
         logger.debug("data: %s", self.data)
         if self.is_bound and self.data.get('ingredient_name', None):
-            ingredient_name = self.data.get('ingredient_name',None)
+            ingredient_name = self.data.get('ingredient_name', None)
             logger.debug("Ingredient name from instance: '%s'", ingredient_name)
         else:
             ingredient_name = self.initial.get('ingredient_name', None)
