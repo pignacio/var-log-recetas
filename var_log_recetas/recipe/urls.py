@@ -23,6 +23,7 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     url(r'^(?P<recipe_id>\d+)/edit/?$', RecipeEditView.as_view(), name='recipe_edit'),
     url(r'^(?P<recipe_id>\d+)/parts/?$', RecipePartsView.as_view(), name='recipe_parts'),
     url(r'^(?P<recipe_id>\d+)/parts/add/?$', RecipeAddPartView.as_view(), name='recipe_parts_add'),
+    url(r'^(?P<recipe_id>\d+)/export/?$', 'recipe_export', name='recipe_export'),
     url(r'^part/(?P<subrecipe_id>\d+)/?$', SubRecipeDetailView.as_view(), name='subrecipe_edit'),
     url(r'^part/(?P<subrecipe_id>\d+)/rename/?$', SubRecipeRenameView.as_view(), name='subrecipe_rename'),
     url(r'^part/(?P<subrecipe_id>\d+)/ingredient_add/?$', 'subrecipe_edit_ingredient_add', name='subrecipe_edit_ingredient_add'),
