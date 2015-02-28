@@ -2,6 +2,7 @@ import json
 import logging
 
 from django.core.urlresolvers import reverse
+from django.utils.text import slugify
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import (
@@ -277,6 +278,31 @@ def subrecipe_edit_step_move_down(request, subrecipe, step):
         'success': not error,
         'error': error,
     }))
+
+
+def _serialize_subrecipe(subrecipe):
+    output = {}
+    output['ingredients'] = [{
+        'amount': i.amount,
+        'unit': i.unit.name,
+        'ingredient': i.ingredient.name,
+    } for i in subrecipe.measuredingredient_set.all()]
+    output['steps'] = [s.text for s in subrecipe.step_set.all()]
+    return output
+
+
+@has_models
+def recipe_export(request, recipe):
+    output = {}
+    output['title'] = recipe.title
+    output['subrecipes'] = [_serialize_subrecipe(sr)
+                            for sr in recipe.subrecipe_set.all()]
+    filename = "receta-{}-{}.json".format(recipe.id, slugify(recipe.title))
+    response = HttpResponse(json.dumps(output, indent=1),
+                            content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+    return response
+
 
 def recipe_view(request, recipe):
     pass

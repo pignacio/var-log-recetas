@@ -12,13 +12,15 @@
   <tr>
     <td>#</td>
     <td>{% trans "Título" %}</td>
-    <td>Edit</td>
+    <td>{% trans "Editar" %}</td>
+    <td>{% trans "Exportar" %}</td>
   </tr>
   {% endif %}
   <tr>
     <td>{{ recipe.id }}</td>
     <td><a href="{% url "recipe_edit" recipe.id %}">{{ recipe.title }}</a></td>
     <td><a href="{% url "recipe_edit" recipe.id %}"><span class="glyphicon glyphicon-edit"></span></a></td>
+    <td><a href="{% url "recipe_export" recipe.id %}"><span class="glyphicon glyphicon-export"></span></a></td>
   </tr>
   {% if forloop.last %}
 </table>
