@@ -282,6 +282,7 @@ def subrecipe_edit_step_move_down(request, subrecipe, step):
 
 def _serialize_subrecipe(subrecipe):
     output = {}
+    output['title'] = subrecipe.title
     output['ingredients'] = [{
         'amount': i.amount,
         'unit': i.unit.name,
