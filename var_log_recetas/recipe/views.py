@@ -6,10 +6,10 @@ from django.utils.text import slugify
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import (
-    FormView, TemplateView, ListView, CreateView, DetailView, RedirectView
+    FormView, ListView, DetailView, RedirectView
 )
 
-from ingredient.models import Ingredient, MeasureUnit
+from ingredient.models import MeasureUnit
 from utils.views import has_models, has_get_models
 from .models import Recipe, MeasuredIngredient, Step, SubRecipe
 from .forms import (
