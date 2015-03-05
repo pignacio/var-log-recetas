@@ -48,10 +48,12 @@ class IngredientForm(forms.ModelForm):
         fields = (
             'name',
             'units',
+            'unit_groups',
         )
 
         widgets = {
             'units': forms.CheckboxSelectMultiple,
+            'unit_groups': forms.CheckboxSelectMultiple,
         }
 
     def __init__(self, *args, **kwargs):
@@ -62,6 +64,7 @@ class IngredientForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'name',
+            'unit_groups',
             'units',
             FormActions(
                 ButtonHolder(
