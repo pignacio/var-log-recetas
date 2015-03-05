@@ -13,6 +13,17 @@ class Ingredient(models.Model):
     units = models.ManyToManyField('MeasureUnit', blank=True)
     unit_groups = models.ManyToManyField('MeasureUnitGroup', blank=True)
 
+    def has_unit(self, unit):
+        return (self.units.filter(id=unit.id).exists() or
+                self.groups.filter(units=unit).exists())
+
+    def all_units(self):
+        units = set()
+        units.update(self.units.all())
+        for unit_group in self.unit_groups.all():
+            units.update(unit_group.units.all())
+        return units
+
     def __unicode__(self):
         return self.name
 
