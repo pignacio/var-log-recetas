@@ -2,6 +2,7 @@
 # encoding: utf-8
 # pylint: disable=too-few-public-methods,too-many-ancestors
 
+import datetime
 import json
 import logging
 
@@ -296,14 +297,31 @@ def _serialize_subrecipe(subrecipe):
     return output
 
 
-@has_models
-def recipe_export(_request, recipe):
+def _serialize_recipe(recipe):
     output = {}
     output['title'] = recipe.title
     output['subrecipes'] = [_serialize_subrecipe(sr)
                             for sr in recipe.subrecipe_set.all()]
+    return output
+
+
+@has_models
+def recipe_export(_request, recipe):
+    output = _serialize_recipe(recipe)
     filename = "receta-{}-{}.json".format(recipe.id, slugify(recipe.title))
     response = HttpResponse(json.dumps(output, indent=1),
+                            content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+    return response
+
+
+def recipe_export_all(_request):
+    output = {}
+    for recipe in Recipe.objects.all():
+        output[recipe.id] = _serialize_recipe(recipe)
+    now = datetime.datetime.now()
+    filename = "recetas-{}.json".format(now.strftime("%Y-%m-%d.%H.%M.%S"))
+    response = HttpResponse(json.dumps(output, indent=1, sort_keys=True),
                             content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
     return response
