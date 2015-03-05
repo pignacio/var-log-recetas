@@ -70,7 +70,11 @@ class MeasuredIngredientForm(forms.ModelForm):
         else:
             units = MeasureUnit.objects.all()
 
-        self.fields['amount'].widget.attrs['placeholder'] = 'Amount'
+        self.fields['amount'].widget.attrs.update({
+            'placeholder': 'Amount',
+            'min': 0.001,
+            'step': 'any',
+        })
         self.fields['ingredient_name'].widget.attrs['placeholder'] = 'Ingredient'
         self.fields['ingredient_name'].empty_label = None
         self.fields['ingredient_name'].widget.datalist = [
