@@ -1,43 +1,43 @@
-function submitModalForm(form_selector, modal_selector, response_selector) {
+function submitModalForm(formSelector, modalSelector, responseSelector) {
   return function() {
-    $(form_selector).ajaxForm(function(responseText, statusText, xhr, $form) {
+    $(formSelector).ajaxForm(function(responseText) {
       if (responseText === '1') {
-        $(modal_selector).modal('hide');
+        $(modalSelector).modal('hide');
       } else {
-        $(response_selector).replaceWith(responseText);
+        $(responseSelector).replaceWith(responseText);
       }
     });
-    $(form_selector).submit();
-  }
+    $(formSelector).submit();
+  };
 }
 
-function setupModalFormSubmit(modal_id, form_selector) {
-  var base_selector = "#" + modal_id;
-  if (form_selector === undefined) {
-    form_selector = base_selector + "-form";
+function setupModalFormSubmit(modalId, formSelector) {
+  var baseSelector = '#' + modalId;
+  if (formSelector === undefined) {
+    formSelector = baseSelector + '-form';
   }
-  $(base_selector + '-ok-button').click(
+  $(baseSelector + '-ok-button').click(
       submitModalForm(
-        form_selector,
-        base_selector,
-        base_selector + '-container'
+        formSelector,
+        baseSelector,
+        baseSelector + '-container'
         )
       );
 }
 
-function setupBaseModalForm(modal_id, form_selector) {
-  var base_selector = "#" + modal_id;
-  if (form_selector === undefined) {
-    form_selector = base_selector + "-form";
+function setupBaseModalForm(modalId, formSelector) { // jshint ignore:line
+  var baseSelector = '#' + modalId;
+  if (formSelector === undefined) {
+    formSelector = baseSelector + '-form';
   }
-  $(form_selector).bind("keyup keypress", function(e) {
+  $(formSelector).bind('keyup keypress', function(e) {
     var code = e.keyCode || e.which;
-    if (code  == 13) {
-      $(base_selector + '-ok-button').click();
+    if (code === 13) {
+      $(baseSelector + '-ok-button').click();
       e.preventDefault();
       return false;
     }
   });
 
-  setupModalFormSubmit(modal_id, form_selector);
+  setupModalFormSubmit(modalId, formSelector);
 }
