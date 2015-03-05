@@ -32,3 +32,5 @@ class MeasureUnit(models.Model):
     class Meta(object):
         verbose_name = _('measure unit')
         verbose_name_plural = _('measure units')
+
+        ordering = ('name',)
