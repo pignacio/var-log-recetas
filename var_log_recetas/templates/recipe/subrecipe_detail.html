@@ -24,7 +24,7 @@ Parte: {{ subrecipe.title }}.
 <script>
 function reloadIngredientAddForm() {
   $("#ingredient-add-container").load("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}?" + $("#ingredient-add-form").serialize(), function(){
-    $('#id_ingredient_name').focus()
+    $('#id_amount').focus()
   });
 }
 function reloadIngredients() {
