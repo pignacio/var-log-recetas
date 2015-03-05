@@ -39,6 +39,14 @@ class Recipe(models.Model):
     title = models.CharField(max_length=200)
     tags = models.ManyToManyField('Tags', blank=True)
 
+    def as_json(self):
+        output = {}
+        output['title'] = self.title
+        output['subrecipes'] = [sr.as_json()
+                                for sr in self.subrecipe_set.all()]
+        return output
+
+
     def __unicode__(self):
         return self.title
 
@@ -54,6 +62,17 @@ class SubRecipe(models.Model):
                 models.Max('position'))['position__max'] or 0
             self.position = max_position + 1
         super(SubRecipe, self).save(*args, **kwargs)
+
+    def as_json(self):
+        output = {}
+        output['title'] = self.title
+        output['ingredients'] = [{
+            'amount': i.amount,
+            'unit': i.unit.name,
+            'ingredient': i.ingredient.name,
+        } for i in self.measuredingredient_set.all()]
+        output['steps'] = [s.text for s in self.step_set.all()]
+        return output
 
     def __unicode__(self):
         return "{s.recipe} part #{s.position}: {s.title}".format(s=self)

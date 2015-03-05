@@ -285,31 +285,10 @@ def subrecipe_edit_step_move_down(_request, subrecipe, step):
     }))
 
 
-def _serialize_subrecipe(subrecipe):
-    output = {}
-    output['title'] = subrecipe.title
-    output['ingredients'] = [{
-        'amount': i.amount,
-        'unit': i.unit.name,
-        'ingredient': i.ingredient.name,
-    } for i in subrecipe.measuredingredient_set.all()]
-    output['steps'] = [s.text for s in subrecipe.step_set.all()]
-    return output
-
-
-def _serialize_recipe(recipe):
-    output = {}
-    output['title'] = recipe.title
-    output['subrecipes'] = [_serialize_subrecipe(sr)
-                            for sr in recipe.subrecipe_set.all()]
-    return output
-
-
 @has_models
 def recipe_export(_request, recipe):
-    output = _serialize_recipe(recipe)
     filename = "receta-{}-{}.json".format(recipe.id, slugify(recipe.title))
-    response = HttpResponse(json.dumps(output, indent=1),
+    response = HttpResponse(json.dumps(recipe.as_json(), indent=1),
                             content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
     return response
@@ -318,7 +297,7 @@ def recipe_export(_request, recipe):
 def recipe_export_all(_request):
     output = {}
     for recipe in Recipe.objects.all():
-        output[recipe.id] = _serialize_recipe(recipe)
+        output[recipe.id] = recipe.as_json()
     now = datetime.datetime.now()
     filename = "recetas-{}.json".format(now.strftime("%Y-%m-%d.%H.%M.%S"))
     response = HttpResponse(json.dumps(output, indent=1, sort_keys=True),
