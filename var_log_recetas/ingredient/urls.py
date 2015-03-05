@@ -9,7 +9,9 @@ from django.conf.urls import patterns, url
 
 from .views import (
     IngredientAddView, IngredientListView, MeasureUnitAddView,
-    MeasureUnitListView, IngredientUpdateView
+    MeasureUnitListView, IngredientUpdateView,
+    MeasureUnitGroupListView, MeasureUnitGroupAddView,
+    MeasureUnitGroupUpdateView,
 )
 
 
@@ -22,6 +24,9 @@ urlpatterns = patterns(  # pylint: disable=invalid-name
     url(r'^ingredient/(?P<ingredient_id>\d+)/?$', IngredientUpdateView.as_view(), name='ingredient_update'),
     url(r'^unit/?$', MeasureUnitListView.as_view(), name='unit_list'),
     url(r'^unit/add/?$', MeasureUnitAddView.as_view(), name='unit_add'),
+    url(r'^unit_group/?$', MeasureUnitGroupListView.as_view(), name='unit_group_list'),
+    url(r'^unit_group/add/?$', MeasureUnitGroupAddView.as_view(), name='unit_group_add'),
+    url(r'^unit_group/(?P<unit_group_id>\d+)/?$', MeasureUnitGroupUpdateView.as_view(), name='unit_group_update'),
 )
 
 
