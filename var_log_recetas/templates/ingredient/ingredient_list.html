@@ -15,6 +15,7 @@
 <table class="table">
   <tr class="active">
     <td>{% trans "Ingrediente" %}</td>
+    <td>{% trans "Grupos de unidades" %}</td>
     <td>{% trans "Unidades" %}</td>
   </tr>
   {% endif %}
@@ -24,6 +25,11 @@
         {{ ingredient.name }}
       </a>
     </td>
+    <td>
+      {% for group in ingredient.unit_groups.all %}
+        <span class="unit_group">{{ group.name }}</span>
+        ({% for unit in group.units.all %}{% if not forloop.first %}, {% endif %}{{ unit.short_name }}{% endfor %})
+      {% endfor %}
     <td>{{ ingredient.units.all | join:", " }}</td>
   </tr>
   {% if forloop.last %}
