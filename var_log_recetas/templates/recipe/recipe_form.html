@@ -1,7 +1,14 @@
 {% extends "generic/form.html" %}
 {% load i18n %}
 
-
 {% block page_title %}{% trans "Agregar receta" %}{% endblock page_title %}
 {% block title %}{% trans "Agregar receta" %}{% endblock title %}
+
+{% block extra_js %}
+<script language="javascript">
+$(document).ready(function() {
+  $('#id_title').focus();
+});
+</script>
+{% endblock extra_js %}
 {# vim: set ft=htmldjango :#}
