@@ -64,7 +64,7 @@ class MeasuredIngredientForm(forms.ModelForm):
         if ingredient_name:
             try:
                 ingredient = Ingredient.objects.get(name=ingredient_name)
-                units = ingredient.units.all()
+                units = ingredient.all_units()
             except (Ingredient.DoesNotExist, ValueError):
                 units = MeasureUnit.objects.all()
         else:
@@ -79,7 +79,8 @@ class MeasuredIngredientForm(forms.ModelForm):
         self.fields['ingredient_name'].empty_label = None
         self.fields['ingredient_name'].widget.datalist = [
             i.name for i in Ingredient.objects.all()]
-        self.fields['unit'].queryset = units
+        logging.debug("Units: %s", units)
+        self.fields['unit'].queryset = MeasureUnit.objects.filter(id__in=[u.id for u in units])
         self.helper = FormHelper()
         self.helper.form_class = 'form-inline'
         self.helper.form_show_labels = False
@@ -106,7 +107,7 @@ class MeasuredIngredientForm(forms.ModelForm):
         ingredient = cleaned_data.get('ingredient', None)
         unit = cleaned_data.get('unit', None)
         if (ingredient and unit and
-                not ingredient.units.filter(id=unit.id).exists()):
+                not ingredient.has_unit(unit)):
             raise forms.ValidationError(_("Unit and Ingredient do not match"))
         return cleaned_data
 

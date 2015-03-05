@@ -12,7 +12,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, ButtonHolder
 from crispy_forms.bootstrap import FormActions
 
-from .models import Ingredient, MeasureUnit
+from .models import Ingredient, MeasureUnit, MeasureUnitGroup
 
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
@@ -48,6 +48,40 @@ class IngredientForm(forms.ModelForm):
         fields = (
             'name',
             'units',
+            'unit_groups',
+        )
+
+        widgets = {
+            'units': forms.CheckboxSelectMultiple,
+            'unit_groups': forms.CheckboxSelectMultiple,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(IngredientForm, self).__init__(*args, **kwargs)
+        submit_text = _('Guardar') if self.instance.pk else _('Agregar')
+        loading_text = (_('Guardando...') if self.instance.pk
+                        else _('Agregando...'))
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'name',
+            'unit_groups',
+            'units',
+            FormActions(
+                ButtonHolder(
+                    Submit('add', submit_text, css_class='btn-default',
+                           data_loading_text=loading_text),
+                    css_class='form-actions pull-right',
+                ),
+            ),
+        )
+
+
+class MeasureUnitGroupForm(forms.ModelForm):
+    class Meta(object):
+        model = MeasureUnitGroup
+        fields = (
+            'name',
+            'units'
         )
 
         widgets = {
@@ -55,7 +89,7 @@ class IngredientForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(IngredientForm, self).__init__(*args, **kwargs)
+        super(MeasureUnitGroupForm, self).__init__(*args, **kwargs)
         submit_text = _('Guardar') if self.instance.pk else _('Agregar')
         loading_text = (_('Guardando...') if self.instance.pk
                         else _('Agregando...'))
