@@ -146,3 +146,13 @@ def _has_get_models(*expected, **kwargs):
 
 def has_get_models(view=None, **kwargs):
     return check_relations(_has_get_models(view, **kwargs))
+
+
+class GenericFormMixin(object):
+    template_name = "generic/form.html"
+    title = "Generic form template"
+
+    def get_context_data(self, *args, **kwargs):
+        data = super(GenericFormMixin, self).get_context_data(*args, **kwargs)
+        data['title'] = self.title
+        return data
