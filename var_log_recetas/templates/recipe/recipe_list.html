@@ -3,8 +3,12 @@
 {% block title %}{% trans "Recetas" %}{% endblock title %}
 {% block page_title %}{% trans "Recetas" %}{% endblock page_title %}
 
+{% block page_buttons %}
+<a href="{% url "recipe_add" %}"><span class="glyphicon glyphicon-plus" title="{% trans "Nueva receta" %}"</span></a>
+<a href="{% url "recipe_export_all" %}"><span class="glyphicon glyphicon-export" title="{% trans "Exportar recetas" %}"</span></a>
+{% endblock page_buttons %}
+
 {% block content %}
-<a class='pull-right btn btn-primary' href="{% url "recipe_add" %}">{% trans "Nueva receta" %}</a>
 
 {% for recipe in recipe_list %}
 {% if forloop.first %}
