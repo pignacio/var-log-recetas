@@ -1,0 +1,33 @@
+{% load compress crispy_forms_tags i18n %}
+{% block all %}
+{% if not partial %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>{{ title }}</title>
+</head>
+<body>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title">{{ title }}</h4>
+</div>
+<div class="modal-body">
+  {% endif %}
+  <div id="{{ id }}-container">
+    {% block content %}{% endblock content %}
+  </div>
+  {% if not partial %}
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal">{% if close_text %}{{ close_text }}{% else %}{% trans 'Close' %}{% endif %}</button>
+  <button type="button" class="btn btn-primary" id="{{ id }}-ok-button" >{% if ok_text %}{{ ok_text }}{% else %}{% trans 'Ok' %}{% endif %}</button>
+</div>
+
+{% block js %}
+{% endblock js %}
+
+</body>
+</html>
+{% endif %}
+{% endblock all %}

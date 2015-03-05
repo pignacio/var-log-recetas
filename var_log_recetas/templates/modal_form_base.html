@@ -1,0 +1,12 @@
+{% extends "console/modal_base.html" %}
+{% load compress crispy_forms_tags i18n %}
+
+{% block content %}
+{% crispy form %}
+{% endblock content %}
+
+{% block js %}
+<script>
+setupBaseModalForm('{{ id }}');
+</script>
+{% endblock js %}
