@@ -10,7 +10,12 @@
 Parte: {{ subrecipe.title }}.
 {% endif %}
 <a class="btn btn-primary btn-xs" href="{% url "recipe_parts" subrecipe.recipe.id %}">{% trans "Editar partes" %}</a>
-<h2>{% trans "Ingredientes" %}</h2>
+<h2>
+  {% trans "Ingredientes" %}
+  <a data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
+    <div class="glyphicon glyphicon-plus icon-add"></div>
+  </a>
+</h2>
 <div id='ingredients-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />
 </div>
@@ -18,6 +23,7 @@ Parte: {{ subrecipe.title }}.
 <div id='steps-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />
 </div>
+{% include "layout/modal.html" with id="ingredient-create" %}
 {% endblock content %}
 
 {% block extra_js %}
@@ -126,12 +132,19 @@ function moveStepDown(step_id) {
   });
 }
 
+
+
 $(document).ready(function() {
   reloadIngredients();
   reloadSteps();
   $('#select-subrecipe-form').on('change', function(){
     window.location = "{% url "recipe_edit" subrecipe.recipe.id %}?" + $('#select-subrecipe-form').serialize()
   })
+  $('#ingredient-create').on('hidden.bs.modal', function () {
+    $('#id_ingredient_name').val($('#ingredient-create #id_name').val());
+    reloadIngredientAddForm();
+    $(this).removeData('bs.modal');
+  });
 })
 
 </script>
