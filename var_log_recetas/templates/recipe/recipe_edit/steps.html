@@ -32,8 +32,9 @@
   </tr>
   {% endfor %}
 </table>
+{% else %}
+{% trans "No hay pasos." %}
 {% endif %}
 <div id='step-add-container'>
-  <a href="#" id='step-add-btn' class="btn btn-primary btn-sm">{% trans "Agregar paso" %}</a>
 </div>
 {# vim: set ft=htmldjango :#}
