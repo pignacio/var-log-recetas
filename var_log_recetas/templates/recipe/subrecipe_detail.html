@@ -19,7 +19,10 @@ Parte: {{ subrecipe.title }}.
 <div id='ingredients-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />
 </div>
-<h2>{% trans "Pasos" %}</h2>
+<h2>
+  {% trans "Pasos" %}
+  <div id="step-add-btn" class="glyphicon glyphicon-plus icon-add icon-h2" title="{% trans "Agregar paso" %}"></div>
+</h2>
 <div id='steps-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />
 </div>

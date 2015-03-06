@@ -1,13 +1,13 @@
 {% load i18n %}
-{% if steps %}
+{% for step in steps %}
+{% if forloop.first %}
 <style>
 .step-options {
   font-size: 20px;
 }
 </style>
 <table class="table">
-
-  {% for step in steps %}
+{% endif %}
   <tr>
     <td>{{ step.text }}</td>
     <td width="25" class="step-options">
@@ -30,10 +30,14 @@
       </a>
     </td>
   </tr>
-  {% endfor %}
+  {% if forloop.last %}
 </table>
-{% endif %}
 <div id='step-add-container'>
-  <a href="#" id='step-add-btn' class="btn btn-primary btn-sm">{% trans "Agregar paso" %}</a>
 </div>
+{% endif %}
+{% empty %}
+<div id='step-add-container'>
+{% trans "No hay pasos." %}
+</div>
+{% endfor %}
 {# vim: set ft=htmldjango :#}
