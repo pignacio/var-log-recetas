@@ -5,6 +5,7 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext as _
 
 import floppyforms.__future__ as forms
@@ -43,6 +44,10 @@ class MeasureUnitForm(forms.ModelForm):
 
 
 class IngredientForm(forms.ModelForm):
+
+    add_button = True
+    form_action = None
+
     class Meta(object):
         model = Ingredient
         fields = (
@@ -62,18 +67,29 @@ class IngredientForm(forms.ModelForm):
         loading_text = (_('Guardando...') if self.instance.pk
                         else _('Agregando...'))
         self.helper = FormHelper()
+        self.helper.form_id = 'ingredient-create-form'
+        if self.form_action:
+            self.helper.form_action = self.form_action
         self.helper.layout = Layout(
             'name',
             'unit_groups',
             'units',
-            FormActions(
-                ButtonHolder(
-                    Submit('add', submit_text, css_class='btn-default',
-                           data_loading_text=loading_text),
-                    css_class='form-actions pull-right',
-                ),
-            ),
         )
+        if self.add_button:
+            self.helper.layout.append(
+                FormActions(
+                    ButtonHolder(
+                        Submit('add', submit_text, css_class='btn-default',
+                               data_loading_text=loading_text),
+                        css_class='form-actions pull-right',
+                    ),
+                ),
+            )
+
+
+class IngredientModalForm(IngredientForm):
+    add_button = False
+    form_action = reverse_lazy('ingredient_add_modal_submit')
 
 
 class MeasureUnitGroupForm(forms.ModelForm):

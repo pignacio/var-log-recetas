@@ -1,1 +1,6 @@
 /*! project specific CSS goes here. */
+
+.icon-add {
+  color: green;
+  font-size: 80%;
+}
