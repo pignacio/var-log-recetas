@@ -222,7 +222,7 @@ def subrecipe_edit_step_add(request, subrecipe):
 
 
 @has_get_models('step', on_error=_render_json_error)
-def subrecipe_edit_step_delete(_request, _subrecipe, step):
+def subrecipe_edit_step_delete(_request, subrecipe, step):  # pylint: disable=unused-argument
     step.delete()
     return HttpResponse(json.dumps({
         'success': True,
