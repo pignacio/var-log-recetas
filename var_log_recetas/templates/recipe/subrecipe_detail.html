@@ -9,7 +9,7 @@
 {% else %}
 Parte: {{ subrecipe.title }}.
 {% endif %}
-<a class="btn btn-primary btn-xs" href="{% url "recipe_parts" subrecipe.recipe.id %}">{% trans "Editar partes" %}</a>
+<a  href="{% url "recipe_parts" subrecipe.recipe.id %}"><div class="glyphicon glyphicon-edit" title="{% trans "Editar partes" %}"></div></a>
 <h2>
   {% trans "Ingredientes" %}
   <a data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
