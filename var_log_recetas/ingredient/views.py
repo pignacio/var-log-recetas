@@ -3,12 +3,14 @@
 # pylint: disable=too-few-public-methods,too-many-ancestors
 
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, FormView, UpdateView
 
 from utils.views import GenericFormMixin
-from .forms import IngredientForm, MeasureUnitForm, MeasureUnitGroupForm
+from .forms import (
+    IngredientForm, MeasureUnitForm, MeasureUnitGroupForm, IngredientModalForm)
 from .models import Ingredient, MeasureUnit, MeasureUnitGroup
 
 
@@ -26,6 +28,24 @@ class IngredientAddView(GenericFormMixin, FormView):
     def form_valid(self, form):
         form.save()
         return redirect('ingredient_list')
+
+
+class IngredientModalAddView(FormView):
+    form_class = IngredientModalForm
+    template_name = "modal_form_base.html"
+    partial = False
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponse('1')
+
+    def get_context_data(self, *args, **kwargs):
+        data = super(IngredientModalAddView, self).get_context_data(
+            *args, **kwargs)
+        data['partial'] = self.partial
+        data['id'] = 'ingredient-create'
+        data['title'] = _('Agregar ingrediente')
+        return data
 
 
 class IngredientUpdateView(GenericFormMixin, UpdateView):
