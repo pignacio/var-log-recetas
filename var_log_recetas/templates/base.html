@@ -49,9 +49,24 @@
                 <li><a href="{% url "recipe_add" %}">{% trans "Nueva receta" %}</a></li>
               </ul>
             </li>
-            <li><a href="{% url "ingredient_list" %}">Ingredientes</a></li>
-            <li><a href="{% url "unit_list" %}">Unidades</a></li>
-            <li><a href="{% url "unit_group_list" %}">Grupos de Unidades</a></li>
+            <li class="dropdown">
+            <a href="{% url "ingredient_list" %}" >{% trans "Ingredientes" %}<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url "ingredient_add" %}">{% trans "Nuevo ingrediente" %}</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+            <a href="{% url "unit_list" %}" >{% trans "Unidades" %}<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url "unit_add" %}">{% trans "Nueva unidad" %}</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+            <a href="{% url "unit_group_list" %}" >{% trans "Grupos de unidades" %}<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="{% url "unit_group_add" %}">{% trans "Nuevo grupo de unidades" %}</a></li>
+              </ul>
+            </li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
