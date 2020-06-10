@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=var_log_recetas
+POSTGRES_USER=oncfPIljrbVRfzsEmBlPHIBXHkPmaILh
+POSTGRES_PASSWORD=Glya1lnImMwyP5KWNHk7aRXct2bAEOhPH0ngz3RGFCi76YNLHfKhsTp4mamEMQS2
