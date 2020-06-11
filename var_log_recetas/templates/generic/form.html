@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{title}}{% endblock title %}
+{% block page_title %}{{title}}{% endblock page_title %}
+
+{% block content %}
+{% crispy form %}
+{% endblock content %}
+{# vim: set ft=htmldjango :#}

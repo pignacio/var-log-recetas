@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Ingredientes" %}{% endblock page_title %}
+{% block title %}{% trans "Ingredientes" %}{% endblock title %}
+
+{% block page_buttons %}
+<a href="{% url "ingredient_add" %}" title="{% trans "Agregar ingrediente" %}"><span class="glyphicon glyphicon-plus icon-add"></span></a>
+{% endblock page_buttons %}
+
+
+{% block content %}
+{% for ingredient in ingredient_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr class="active">
+    <td>{% trans "Ingrediente" %}</td>
+    <td>{% trans "Grupos de unidades" %}</td>
+    <td>{% trans "Unidades" %}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>
+      <a href="{% url "ingredient_update" ingredient.id%}">
+        {{ ingredient.name }}
+      </a>
+    </td>
+    <td>
+      {% for group in ingredient.unit_groups.all %}
+        <span class="unit_group">{{ group.name }}</span>
+        ({% for unit in group.units.all %}{% if not forloop.first %}, {% endif %}{{ unit.short_name }}{% endfor %})
+      {% endfor %}
+    <td>{{ ingredient.units.all | join:", " }}</td>
+  </tr>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay ingredientes :(
+{% endfor %}
+{% endblock content %}
+{# vim: set ft=htmldjango :#}

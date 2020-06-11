@@ -16,6 +16,7 @@ urlpatterns = [
     path("users/", include("var_log_recetas.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("ingredient/", include("var_log_recetas.ingredient.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

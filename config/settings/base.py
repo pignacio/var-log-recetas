@@ -65,6 +65,7 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "crispy_forms",
+    "floppyforms",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
@@ -72,6 +73,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "var_log_recetas.users.apps.UsersConfig",
+    "var_log_recetas.ingredient.apps.IngredientConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

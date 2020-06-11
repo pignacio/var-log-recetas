@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block page_title %}{% trans "Grupos de Unidades" %}{% endblock page_title %}
+{% block title %}{% trans "Grupos de Unidades" %}{% endblock title %}
+
+{% block page_buttons %}
+<a href="{% url "unit_group_add" %}" title="{% trans "Agregar unit_groupe" %}"><span class="glyphicon glyphicon-plus icon-add"></span></a>
+{% endblock page_buttons %}
+
+
+{% block content %}
+{% for measureunitgroup in measureunitgroup_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr class="active">
+    <td>{% trans "Grupo de Unidades" %}</td>
+    <td>{% trans "Unidades" %}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>
+      <a href="{% url "unit_group_update" measureunitgroup.id%}">
+        {{ measureunitgroup.name }}
+      </a>
+    </td>
+    <td>{{ measureunitgroup.units.all | join:", " }}</td>
+  </tr>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay grupos de unidades :(
+{% endfor %}
+{% endblock content %}
+{# vim: set ft=htmldjango :#}
