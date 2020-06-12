@@ -1,0 +1,43 @@
+{% load i18n %}
+{% for step in steps %}
+{% if forloop.first %}
+<style>
+.step-options {
+  font-size: 20px;
+}
+</style>
+<table class="table">
+{% endif %}
+  <tr>
+    <td>{{ step.text }}</td>
+    <td width="25" class="step-options">
+      {% if not forloop.first %}
+      <a href="javascript: moveStepUp({{ step.id }})">
+        <span class="glyphicon glyphicon-arrow-up" style='color:green'></span>
+      </a>
+      {% endif%}
+    </td>
+    <td width="25" class="step-options">
+      {% if not forloop.last %}
+      <a href="javascript: moveStepDown({{ step.id }})">
+        <span class="glyphicon glyphicon-arrow-down" style='color:green'></span>
+      </a>
+      {% endif%}
+    </td>
+    <td width="25" class="step-options">
+      <a href="javascript: deleteStep({{ step.id }})">
+        <span class="glyphicon glyphicon-remove" style='color:red'></span>
+      </a>
+    </td>
+  </tr>
+  {% if forloop.last %}
+</table>
+<div id='step-add-container'>
+</div>
+{% endif %}
+{% empty %}
+<div id='step-add-container'>
+{% trans "No hay pasos." %}
+</div>
+{% endfor %}
+{# vim: set ft=htmldjango :#}

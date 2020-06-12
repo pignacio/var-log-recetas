@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Recetas" %}{% endblock title %}
+{% block page_title %}{% trans "Recetas" %}{% endblock page_title %}
+
+{% block page_buttons %}
+<a href="{% url "recipe_add" %}"><span class="glyphicon glyphicon-plus icon-add" title="{% trans "Nueva receta" %}"</span></a>
+<a href="{% url "recipe_export_all" %}"><span class="glyphicon glyphicon-export" title="{% trans "Exportar recetas" %}"</span></a>
+{% endblock page_buttons %}
+
+{% block content %}
+
+{% for recipe in recipe_list %}
+{% if forloop.first %}
+<table class="table">
+  <tr>
+    <td>#</td>
+    <td>{% trans "Título" %}</td>
+    <td>{% trans "Editar" %}</td>
+    <td>{% trans "Exportar" %}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ recipe.id }}</td>
+    <td><a href="{% url "recipe_edit" recipe.id %}">{{ recipe.title }}</a></td>
+    <td><a href="{% url "recipe_edit" recipe.id %}"><span class="glyphicon glyphicon-edit"></span></a></td>
+    <td><a href="{% url "recipe_export" recipe.id %}"><span class="glyphicon glyphicon-export"></span></a></td>
+  </tr>
+  {% if forloop.last %}
+</table>
+{% endif %}
+{% empty %}
+No hay recetas :(
+{% endfor %}
+{% endblock content %}
+
+{# vim: set ft=htmldjango :#}

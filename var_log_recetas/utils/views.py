@@ -11,12 +11,18 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
 def _view_models():
-    # from recipe.models import Recipe, MeasuredIngredient, Step, SubRecipe
+    from var_log_recetas.recipe.models import (
+        Recipe,
+        MeasuredIngredient,
+        Step,
+        SubRecipe,
+    )
+
     return {
-        #     'recipe': Recipe,
-        #     'subrecipe': SubRecipe,
-        #     'measured_ingredient': MeasuredIngredient,
-        #     'step': Step,
+        "recipe": Recipe,
+        "subrecipe": SubRecipe,
+        "measured_ingredient": MeasuredIngredient,
+        "step": Step,
     }
 
 

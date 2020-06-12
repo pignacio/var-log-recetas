@@ -1,0 +1,14 @@
+{% load i18n %}
+<ul>
+  {% for measured in measured_ingredients %}
+  <li>
+    {{ measured.ingredient }}, {{ measured.amount }} {{ measured.unit }}
+    <a href="javascript: deleteIngredient({{ measured.id }})">
+      <span class="glyphicon glyphicon-remove" style='color:red'></span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+<div id='ingredient-add-container'>
+</div>
+{# vim: set ft=htmldjango :#}

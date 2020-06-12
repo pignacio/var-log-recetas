@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags staticfiles %}
+{% block title %}{% trans "Receta" %}: {{ subrecipe.recipe.title }}{% endblock title %}
+{% block page_title %}{% trans "Receta" %}: {{ subrecipe.recipe.title }}{% endblock page_title %}
+
+{% block content %}
+{% if subrecipe_select_form %}
+{% crispy subrecipe_select_form %}
+{% else %}
+Parte: {{ subrecipe.title }}.
+{% endif %}
+<a  href="{% url "recipe_parts" subrecipe.recipe.id %}"><div class="glyphicon glyphicon-edit" title="{% trans "Editar partes" %}"></div></a>
+<h2>
+  {% trans "Ingredientes" %}
+  <a data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
+    <div class="glyphicon glyphicon-plus icon-add icon-h2"></div>
+  </a>
+</h2>
+<div id='ingredients-container'>
+  <img src="{% static "img/ajax-loader.gif" %}" />
+</div>
+<h2>
+  {% trans "Pasos" %}
+  <div id="step-add-btn" class="glyphicon glyphicon-plus icon-add icon-h2" title="{% trans "Agregar paso" %}"></div>
+</h2>
+<div id='steps-container'>
+  <img src="{% static "img/ajax-loader.gif" %}" />
+</div>
+{% include "layout/modal.html" with id="ingredient-create" %}
+{% endblock content %}
+
+{% block extra_js %}
+<script>
+function reloadIngredientAddForm() {
+  $("#ingredient-add-container").load("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}?" + $("#ingredient-add-form").serialize(), function(){
+    $('#id_amount').focus()
+  });
+}
+function reloadIngredients() {
+  $("#ingredients-container").load("{% url "subrecipe_edit_ingredients" subrecipe.id %}", function(){
+    reloadIngredientAddForm();
+ });
+}
+
+function submitIngredientAddForm() {
+  $.post("{% url "subrecipe_edit_ingredient_add" subrecipe.id %}", $("#ingredient-add-form").serialize(), function(response) {
+    if (response == "1") {
+      reloadIngredients();
+    }
+  })
+}
+
+function deleteIngredient(ingredient_id) {
+  swal({
+    title: "¿Seguro?",
+    text: "¿Querés borrar ese ingrediente?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Sí, borralo",
+  },
+  function() {
+  $.getJSON("{% url "subrecipe_edit_ingredient_delete" subrecipe.id %}?ingredient_id=" + ingredient_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal borrando el ingrediente: '" + response.error + "'");
+    }
+    reloadIngredients();
+  })
+  });
+}
+
+
+function reloadStepAddForm() {
+  $("#step-add-container").load(
+    "{% url "subrecipe_edit_step_add" subrecipe.id %}?" + $("#step-add-form").serialize(),
+    function (){
+      $("#step-add-form").on('submit', function(e) {
+        e.preventDefault();
+        submitStepAddForm();
+      })
+    }
+  );
+}
+function reloadSteps() {
+  $("#steps-container").load("{% url "subrecipe_edit_steps" subrecipe.id %}", function(){
+    $("#step-add-btn").click(reloadStepAddForm)
+ });
+}
+
+function submitStepAddForm() {
+  $.post("{% url "subrecipe_edit_step_add" subrecipe.id %}", $("#step-add-form").serialize(), function(response) {
+    if (response == "1") {
+      reloadSteps();
+    } else {
+      $("#step-add-container").html(response);
+      $("#id_step").change(reloadStepAddForm)
+    }
+  })
+}
+
+function deleteStep(step_id) {
+  swal({
+    title: "¿Seguro?",
+    text: "¿Querés borrar ese paso?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Sí, borralo",
+  },
+  function() {
+  $.getJSON("{% url "subrecipe_edit_step_delete" subrecipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal borrando el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  })
+  });
+}
+
+function moveStepUp(step_id) {
+  $.getJSON("{% url "subrecipe_edit_step_move_up" subrecipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  });
+}
+
+function moveStepDown(step_id) {
+  $.getJSON("{% url "subrecipe_edit_step_move_down" subrecipe.id %}?step_id=" + step_id, function(response) {
+    if (!response.success){
+      swal("Ooops!", "Algo salió mal moviendo el paso: '" + response.error + "'");
+    }
+    reloadSteps();
+  });
+}
+
+
+
+$(document).ready(function() {
+  reloadIngredients();
+  reloadSteps();
+  $('#select-subrecipe-form').on('change', function(){
+    window.location = "{% url "recipe_edit" subrecipe.recipe.id %}?" + $('#select-subrecipe-form').serialize()
+  })
+  $('#ingredient-create').on('hidden.bs.modal', function () {
+    $('#id_ingredient_name').val($('#ingredient-create #id_name').val());
+    reloadIngredientAddForm();
+    $(this).removeData('bs.modal');
+  });
+})
+
+</script>
+{% endblock extra_js %}
+{# vim: set ft=htmldjango :#}

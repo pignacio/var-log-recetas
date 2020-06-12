@@ -1,0 +1,16 @@
+{% extends "layout/crispyform.html" %}
+{% block js %}
+<script>
+$("#id_ingredient_name").on('input', function() {
+  var current = $('#id_ingredient_name').val();
+  var selector = "#id_ingredient_name_list option[value='" + current + "']";
+  if ($(selector).length > 0)
+    reloadIngredientAddForm();
+});
+$("#ingredient-add-form").on('submit', function(e) {
+  e.preventDefault();
+  submitIngredientAddForm();
+})
+</script>
+{% endblock js %}
+{# vim: set ft=htmldjango :#}
