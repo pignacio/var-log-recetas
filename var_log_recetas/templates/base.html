@@ -20,8 +20,7 @@
     <!-- Latest compiled and minified Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-
-    <!-- Your stuff: Third-party CSS libraries go here -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- This file stores project-specific CSS -->
 
@@ -47,24 +46,25 @@
               <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item dropdown">
-            <a href="{% url "ingredient_list" %}" >{% trans "Ingredientes" %}<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url "ingredient_add" %}">{% trans "Nuevo ingrediente" %}</a></li>
-              </ul>
+              <a class="nav-link dropdown-toggle" href="#" id="ingredientDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans "Ingredientes" %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="ingredientDropdown">
+                <a class="dropdown-item" href="{% url "ingredient_list" %}" >{% trans "Ingredientes" %}</a>
+                <a class="dropdown-item" href="{% url "ingredient_add" %}">{% trans "Nuevo ingrediente" %}</a>
+              </div>
             </li>
             <li class="nav-item dropdown">
-            <a href="{% url "unit_list" %}" >{% trans "Unidades" %}<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url "unit_add" %}">{% trans "Nueva unidad" %}</a></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-            <a href="{% url "unit_group_list" %}" >{% trans "Grupos de unidades" %}<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="{% url "unit_group_add" %}">{% trans "Nuevo grupo de unidades" %}</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
+              <a class="nav-link dropdown-toggle" href="#" id="unitDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans "Unidades" %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="unitDropdown">
+                <a class="dropdown-item" href="{% url "unit_list" %}" >{% trans "Unidades" %}</a>
+                <a class="dropdown-item" href="{% url "unit_add" %}">{% trans "Nueva unidad" %}</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url "unit_group_list" %}" >{% trans "Grupos de unidades" %}</a>
+                <a class="dropdown-item" href="{% url "unit_group_add" %}">{% trans "Nuevo grupo de unidades" %}</a>
+              </div>
             </li>
             {% if request.user.is_authenticated %}
               <li class="nav-item">
@@ -98,6 +98,10 @@
               <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
           {% endfor %}
       {% endif %}
+
+      <h1>
+        {% block page_title %}Example Base Template{% endblock page_title %}
+        <div class="pull-right">{% block page_buttons %}{% endblock page_buttons %}</div></h1>
 
       {% block content %}
         <p>Use this document as a way to quick start any new project.</p>
