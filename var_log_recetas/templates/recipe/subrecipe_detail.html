@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n crispy_forms_tags staticfiles %}
+{% load i18n crispy_forms_tags static %}
 {% block title %}{% trans "Receta" %}: {{ subrecipe.recipe.title }}{% endblock title %}
 {% block page_title %}{% trans "Receta" %}: {{ subrecipe.recipe.title }}{% endblock page_title %}
 
@@ -9,11 +9,11 @@
 {% else %}
 Parte: {{ subrecipe.title }}.
 {% endif %}
-<a  href="{% url "recipe_parts" subrecipe.recipe.id %}"><div class="glyphicon glyphicon-edit" title="{% trans "Editar partes" %}"></div></a>
+<a  href="{% url "recipe_parts" subrecipe.recipe.id %}"><div class="fa fa-pencil-square-o" title="{% trans "Editar partes" %}"></div></a>
 <h2>
   {% trans "Ingredientes" %}
   <a data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
-    <div class="glyphicon glyphicon-plus icon-add icon-h2"></div>
+    <div class="fa fa-plus icon-add icon-h2"></div>
   </a>
 </h2>
 <div id='ingredients-container'>
@@ -21,7 +21,7 @@ Parte: {{ subrecipe.title }}.
 </div>
 <h2>
   {% trans "Pasos" %}
-  <div id="step-add-btn" class="glyphicon glyphicon-plus icon-add icon-h2" title="{% trans "Agregar paso" %}"></div>
+  <div id="step-add-btn" class="fa fa-plus icon-add icon-h2" title="{% trans "Agregar paso" %}"></div>
 </h2>
 <div id='steps-container'>
   <img src="{% static "img/ajax-loader.gif" %}" />

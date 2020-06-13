@@ -9,7 +9,7 @@
   {% for subrecipe in recipe.subrecipe_set.all %}
   <li>
   <a href="{% url "subrecipe_edit" subrecipe.id %}">{{ subrecipe.title }}</a>
-  <a href="{% url "subrecipe_rename" subrecipe.id %}"><div class="glyphicon glyphicon-edit"></div></a>
+  <a href="{% url "subrecipe_rename" subrecipe.id %}"><div class="fa fa-pencil-square-o"></div></a>
   </li>
   {% endfor %}
 </ol>

@@ -1,0 +1,13 @@
+/*! project specific CSS goes here. */
+
+.icon-add {
+  color: green;
+}
+
+.icon-h2 {
+  font-size: 80%;
+}
+
+ul.nav li.dropdown:hover ul.dropdown-menu {
+  display: block;
+}

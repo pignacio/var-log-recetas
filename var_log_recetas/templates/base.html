@@ -23,8 +23,8 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- This file stores project-specific CSS -->
-
-    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <link href="{% static 'css/var_log_recetas.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sweet-alert.css' %}" rel="stylesheet">
 
 
     {% endblock %}
@@ -44,6 +44,15 @@
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="recipeDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans "Recetas" %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="recipeDropdown">
+                <a class="dropdown-item" href="{% url "recipe_home" %}" >{% trans "Recetas" %}</a>
+                <a class="dropdown-item" href="{% url "recipe_add" %}">{% trans "Nueva Receta" %}</a>
+              </div>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="ingredientDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -121,13 +130,17 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-      <!-- Your stuff: Third-party javascript libraries go here -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'js/jquery-1.11.1.js'%}"></script>
+    <script src="{% static 'js/jquery.form.3.51.0.js'%}"></script>
+    <script src="{% static 'js/sweet-alert.js' %}"></script>
 
+    <!-- place project specific Javascript in this file -->
+    <script src="{% static 'js/var_log_recetas.js' %}"></script>
+    <script src="{% static 'js/modal_utils.js' %}"></script>
 
-      <!-- place project specific Javascript in this file -->
-
-      <script src="{% static 'js/project.js' %}"></script>
-
+    {% block extra_js %}
+    {% endblock extra_js %}
 
     {% endblock javascript %}
   </body>

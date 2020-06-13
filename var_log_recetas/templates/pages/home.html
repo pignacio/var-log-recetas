@@ -1,1 +1,15 @@
 {% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+{% block page_title %}Home{% endblock page_title %}
+
+{% block content %}
+<ul class="list-group">
+  <li class="list-group-item"><a href="{% url "recipe_home" %}">Recetas</a></li>
+  <li class="list-group-item"><a href="{% url "ingredient_list" %}">Ingredientes</a></li>
+  <li class="list-group-item"><a href="{% url "unit_list" %}">Unidades</a></li>
+  <li class="list-group-item"><a href="{% url "unit_group_list" %}">Grupos de Unidades</a></li>
+</ul>
+{% endblock content %}
+
+{# vim: set ft=htmldjango :#}
