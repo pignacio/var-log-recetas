@@ -62,3 +62,5 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
+INSTALLED_APPS += ["silk"]
