@@ -12,7 +12,7 @@ Parte: {{ subrecipe.title }}.
 <a  href="{% url "recipe_parts" subrecipe.recipe.id %}"><div class="fa fa-pencil-square-o" title="{% trans "Editar partes" %}"></div></a>
 <h2>
   {% trans "Ingredientes" %}
-  <a data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
+  <a class="remote-modal" data-toggle="modal" data-target="#ingredient-create" href="{% url "ingredient_add_modal" %}" style="text-decoration: none;">
     <div class="fa fa-plus icon-add icon-h2"></div>
   </a>
 </h2>
@@ -143,6 +143,9 @@ $(document).ready(function() {
   $('#select-subrecipe-form').on('change', function(){
     window.location = "{% url "recipe_edit" subrecipe.recipe.id %}?" + $('#select-subrecipe-form').serialize()
   })
+  $('.remote-modal').click(function () {
+    $($(this).data("target") + ' .modal-content').load($(this).attr('href'));
+  });
   $('#ingredient-create').on('hidden.bs.modal', function () {
     $('#id_ingredient_name').val($('#ingredient-create #id_name').val());
     reloadIngredientAddForm();
